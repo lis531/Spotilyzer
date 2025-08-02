@@ -1,12 +1,16 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --foreground-muted: #666666;
+  --spotify-green: #1db954;
+  --spotify-green-light: #1ed760;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --foreground-muted: #a1a1a1;
   }
 }
 
@@ -14,6 +18,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  height: 100%;
 }
 
 body {
@@ -22,6 +27,8 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
 }
 
 * {
@@ -39,4 +46,198 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+/* Global component styles for Spotilyzer */
+
+/* Page Layout */
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: var(--font-geist-sans);
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Typography */
+.title {
+  font-size: 3rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--spotify-green), var(--spotify-green-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.description {
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #666;
+  max-width: 600px;
+}
+
+/* Navigation */
+.backLink {
+  color: var(--spotify-green);
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: inline-block;
+  text-align: center;
+}
+
+.backLink:hover {
+  background-color: rgba(29, 185, 84, 0.1);
+}
+
+/* Cards */
+.card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  box-shadow: 0 8px 30px rgba(29, 185, 84, 0.2);
+  border-color: var(--spotify-green);
+}
+
+/* Forms */
+.form {
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.formGroup input,
+.formGroup textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+  font-family: inherit;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  outline: none;
+  border-color: var(--spotify-green);
+}
+
+.formGroup textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--spotify-green), var(--spotify-green-light));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.submitButton:hover {
+  box-shadow: 0 4px 20px rgba(29, 185, 84, 0.3);
+}
+
+/* Grids */
+.grid {
+  display: grid;
+  gap: 2rem;
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+.gridResponsive {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Images and Icons */
+.image {
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--spotify-green), var(--spotify-green-light));
+}
+
+.imageCircle {
+  border-radius: 50%;
+}
+
+/* Utilities */
+.textCenter {
+  text-align: center;
+}
+
+.spacingBottom {
+  margin-bottom: 3rem;
+}
+
+.rank {
+  background: var(--spotify-green);
+  color: white;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+/* Page Transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateX(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateX(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
