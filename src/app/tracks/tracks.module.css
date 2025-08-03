@@ -1,0 +1,93 @@
+.trackList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.trackCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.trackCard:hover {
+  background: linear-gradient(135deg, rgba(29, 185, 84, 0.1), rgba(30, 215, 96, 0.05));
+  border-color: rgba(29, 185, 84, 0.3);
+  box-shadow: 0 8px 25px rgba(29, 185, 84, 0.15);
+}
+
+.trackInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.trackImage {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--spotify-green), var(--spotify-green-light));
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.trackDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.trackDetails h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.trackDetails p {
+  margin: 0;
+  color: var(--foreground-muted);
+  font-size: 0.9rem;
+}
+
+.playCount {
+  font-size: 0.8rem;
+  color: var(--spotify-green);
+  font-weight: 500;
+}
+
+.trackRank {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--spotify-green);
+  min-width: 60px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .trackCard {
+    padding: 1rem;
+  }
+  
+  .trackImage {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .trackDetails h3 {
+    font-size: 1rem;
+  }
+  
+  .trackRank {
+    font-size: 1.2rem;
+    min-width: 50px;
+  }
+}

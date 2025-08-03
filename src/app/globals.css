@@ -1,5 +1,6 @@
 :root {
   --background: #ffffff;
+  --background-muted: #f9f9f9;
   --foreground: #171717;
   --foreground-muted: #666666;
   --spotify-green: #1db954;
@@ -9,6 +10,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
+    --background-muted: #121212;
     --foreground: #ededed;
     --foreground-muted: #a1a1a1;
   }
@@ -65,7 +67,7 @@ a {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 2rem 0;
+  padding: 6rem 0;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
@@ -110,10 +112,10 @@ a {
 
 /* Cards */
 .card {
-  background: white;
+  background: var(--background);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--foreground-muted);
   transition: all 0.3s ease;
   cursor: pointer;
 }
@@ -217,27 +219,4 @@ a {
   border-radius: 20px;
   font-weight: bold;
   font-size: 0.8rem;
-}
-
-/* Page Transitions */
-.page-transition-enter {
-  opacity: 0;
-  transform: translateX(20px);
-}
-
-.page-transition-enter-active {
-  opacity: 1;
-  transform: translateX(0);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.page-transition-exit {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.page-transition-exit-active {
-  opacity: 0;
-  transform: translateX(-20px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
 }

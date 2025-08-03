@@ -1,0 +1,92 @@
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  text-align: center;
+}
+
+.contactButton {
+  width: 200px;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--spotify-green), var(--spotify-green-light));
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(29, 185, 84, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.contactButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(29, 185, 84, 0.3);
+}
+
+.contactButton:active {
+  transform: translateY(0);
+}
+
+/* Different button styles for each platform */
+.contactButton:nth-child(2) {
+  /* GitHub button */
+  background: rgba(85, 85, 85, 0.2);
+  transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(85, 85, 85, 0.1);
+  box-shadow: 0 4px 15px rgba(51, 51, 51, 0.2);
+}
+
+.contactButton:nth-child(2):hover {
+  background: rgba(85, 85, 85, 0.3);
+  border-color: rgba(85, 85, 85, 0.4);
+  box-shadow: 0 8px 25px rgba(51, 51, 51, 0.3);
+}
+
+.contactButton:nth-child(3) {
+/* Twitter button */
+  background: rgba(29, 161, 242, 0.2);
+  transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(29, 161, 242, 0.1);
+  box-shadow: 0 4px 15px rgba(29, 161, 242, 0.2);
+}
+
+.contactButton:nth-child(3):hover {
+  background: rgba(29, 161, 242, 0.3);
+  border-color: rgba(29, 161, 242, 0.4);
+  box-shadow: 0 8px 25px rgba(29, 161, 242, 0.3);
+}
+
+.contactButton:nth-child(4) {
+  /* Email button */
+  background: rgba(255, 0, 0, 0.2);
+  transition: background 0.3s ease, border 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(255, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+}
+
+.contactButton:nth-child(4):hover {
+  background: rgba(255, 0, 0, 0.3);
+  border-color: rgba(255, 0, 0, 0.4);
+  box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .contactMain {
+    padding-top: 5rem;
+  }
+  
+  .container {
+    gap: 1.5rem;
+  }
+  
+  .contactButton {
+    width: 180px;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+}

@@ -1,5 +1,6 @@
 "use client";
 import styles from "./home.module.css";
+import { motion } from "framer-motion";
 import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
 
@@ -8,7 +9,13 @@ export default function Home() {
   return (
     <div className="page">
       <Navigation />
-      <main className="main">
+      <motion.main
+        className="main"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      >
         <h1 className="title">Welcome to Spotilyzer</h1>
         <p className="description">
           Analyze your Spotify listening habits and discover new music.
@@ -20,7 +27,7 @@ export default function Home() {
           <p className={styles.text}>
             Dive deep into your Spotify data to uncover trends, favorite genres, and more.
           </p>
-          
+
           <div className={styles.moodsSection}>
             <h1 className={styles.h1}>
               Your Moods
@@ -41,12 +48,12 @@ export default function Home() {
               </div>
             </div>
           </div>
-          
+
           <p className={styles.disclaimer}>
             <strong>Disclaimer:</strong> This application is not affiliated with Spotify.
           </p>
         </section>
-      </main>
+      </motion.main>
       <Footer />
     </div>
   );

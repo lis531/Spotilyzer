@@ -1,0 +1,23 @@
+.genreGrid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.genreCard {
+  background: linear-gradient(135deg, #1db954, #1ed760);
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.genreCard h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.genreCard p {
+  font-size: 1rem;
+  opacity: 0.9;
+}
