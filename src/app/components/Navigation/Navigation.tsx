@@ -1,13 +1,16 @@
 "use client";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./Navigation.module.css";
+import { logout } from "@/utils/spotify";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Navigation() {
     const [showPopular, setShowPopular] = useState(false);
     const pathname = usePathname();
+    const { isLoggedIn, loading } = useAuth();
 
     // Check if current page is one of the dropdown pages
     const isDropdownPage = ['/tracks', '/genres', '/artists'].includes(pathname);
@@ -26,26 +29,31 @@ export default function Navigation() {
         };
     }, []);
 
+    const handleLogout = () => {
+        logout();
+        window.location.reload();
+    };
+
     return (
-        <nav className={styles.nav}>
-            <motion.div className={styles.linkContainer}>
-                <Link href="/" className={`${styles.navLink} ${pathname === '/' ? styles.active : ''}`} >
+        <nav className={`${styles.nav} ${(!isLoggedIn || loading) ? styles.hidden : ''}`}>
+            <div className={styles.linkContainer}>
+                <Link href="/" className={`${styles.navLink} ${pathname === '/' ? styles.active : ''}`}>
                     Home
                 </Link>
                 {pathname === '/' && (
                     <motion.div className={styles.highlight} layoutId="highlight" transition={{ duration: 0.2, ease: "easeInOut" }} />
                 )}
-            </motion.div>
+            </div>
 
             <div className={styles.dropdownContainer}>
-                <motion.div className={styles.linkContainer}>
-                    <button className={`${styles.button} ${shouldHighlightDropdown ? styles.active : ''}`} onClick={() => setShowPopular(!showPopular)} >
+                <div className={styles.linkContainer}>
+                    <button className={`${styles.button} ${shouldHighlightDropdown ? styles.active : ''}`} onClick={() => setShowPopular(!showPopular)}>
                         Most popular
                     </button>
                     {shouldHighlightDropdown && (
                         <motion.div className={styles.highlight} layoutId="highlight" transition={{ duration: 0.2, ease: "easeInOut" }} />
                     )}
-                </motion.div>
+                </div>
                 <AnimatePresence>
                     {showPopular && (
                         <motion.ul
@@ -86,13 +94,21 @@ export default function Navigation() {
             </div>
 
             <motion.div className={styles.linkContainer}>
-                <Link href="/contact" className={`${styles.navLink} ${pathname === '/contact' ? styles.active : ''}`} >
+                <Link href="/contact" className={`${styles.navLink} ${pathname === '/contact' ? styles.active : ''}`}>
                     Contact
                 </Link>
                 {pathname === '/contact' && (
-                    <motion.div className={styles.highlight} layoutId="highlight" transition={{ duration: 0.2, ease: "easeInOut" }}/>
+                    <motion.div className={styles.highlight} layoutId="highlight" transition={{ duration: 0.2, ease: "easeInOut" }} />
                 )}
             </motion.div>
+            
+            <button className={styles.button} onClick={handleLogout} title="Logout" aria-label="Logout">
+                <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="20px" width="20px" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" x2="9" y1="12" y2="12"></line>
+                </svg>
+            </button>
         </nav>
     );
 }

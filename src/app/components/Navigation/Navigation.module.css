@@ -15,10 +15,12 @@
   z-index: 1000;
   border: 1px solid rgba(240, 240, 240, 0.8);
   border-top: none;
+  overflow: visible;
 }
 
 .linkContainer {
   position: relative;
+  overflow: visible;
 }
 
 .navLink {
@@ -54,6 +56,8 @@
   border-radius: 8px;
   border: 1px solid rgba(29, 185, 84, 0.2);
   z-index: 1;
+  pointer-events: none;
+  will-change: transform;
 }
 
 .button {
@@ -86,6 +90,7 @@
 
 .dropdownContainer {
   position: relative;
+  overflow: visible;
 }
 
 .dropdownList {
@@ -170,4 +175,8 @@
     background: linear-gradient(135deg, rgba(29, 185, 84, 0.2), rgba(30, 215, 96, 0.2));
     border-color: rgba(29, 185, 84, 0.3);
   }
+}
+
+.hidden {
+  display: none;
 }

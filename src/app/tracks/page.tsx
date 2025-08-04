@@ -1,20 +1,16 @@
 "use client";
 import styles from "./tracks.module.css";
 import { motion } from "framer-motion";
-import Navigation from "../components/Navigation";
-import Footer from "../components/Footer";
 
 export default function Tracks() {
     return (
-        <div className="page">
-            <Navigation />
-            <motion.main
-                className={`main`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
+        <motion.main
+            className={`main`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+        >
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -49,7 +45,5 @@ export default function Tracks() {
                     </div>
                 </motion.div>
             </motion.main>
-            <Footer />
-        </div>
     );
 }

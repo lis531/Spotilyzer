@@ -1,0 +1,115 @@
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.loadingContainer p {
+  font-size: 1.2rem;
+  color: var(--foreground);
+  opacity: 0.8;
+}
+
+.authContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  text-align: center;
+  padding: 2rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.authTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #1db954, #1ed760);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.authDescription {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  color: var(--foreground);
+  opacity: 0.8;
+}
+
+.spotifyButton {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #1db954, #1ed760);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(29, 185, 84, 0.3);
+  margin-bottom: 1.5rem;
+}
+
+.spotifyButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(29, 185, 84, 0.4);
+  background: linear-gradient(135deg, #1ed760, #1db954);
+}
+
+.spotifyButton:active {
+  transform: translateY(0);
+}
+
+.spotifyIcon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.authDisclaimer {
+  font-size: 0.9rem;
+  color: var(--foreground);
+  opacity: 0.6;
+  line-height: 1.4;
+  max-width: 400px;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .authTitle {
+    background: linear-gradient(135deg, #1ed760, #1db954);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .authContainer {
+    padding: 1rem;
+    min-height: 60vh;
+  }
+  
+  .authTitle {
+    font-size: 2rem;
+  }
+  
+  .authDescription {
+    font-size: 1rem;
+  }
+  
+  .spotifyButton {
+    padding: 14px 28px;
+    font-size: 1rem;
+  }
+}
