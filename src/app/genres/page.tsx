@@ -1,8 +1,21 @@
 "use client";
 import styles from "./genres.module.css";
 import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { getUserTopGenres } from "@/utils/spotify";
 
 export default function Genres() {
+    const [topGenres, setTopGenres] = useState<string[]>([]);
+
+    const fetchTopGenres = async (timeRange: 'short_term' | 'medium_term' | 'long_term') => {
+        const genres = await getUserTopGenres(timeRange);
+        setTopGenres(genres);
+    };
+
+    useEffect(() => {
+        fetchTopGenres("medium_term");
+    }, []);
+
     return (
         <motion.main className="main"
             initial={{ opacity: 0, y: 20 }}
@@ -10,39 +23,34 @@ export default function Genres() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
         >
-                <h1 className="title">Most Popular Genres</h1>
-                <p className="description">
-                    Discover your top music genres and explore new ones based on your listening habits.
-                </p>
+            <h1 className="title">Most Popular Genres</h1>
+            <p className="description">
+                Discover your top music genres and explore new ones based on your listening habits.
+            </p>
 
-                <div className={`grid gridResponsive ${styles.genreGrid}`}>
-                    <motion.div
-                        className={styles.genreCard}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        <h3>Pop</h3>
-                        <p>45% of your listening time</p>
-                    </motion.div>
+            <div>
+                <button className={styles.timeRangeButton} onClick={() => fetchTopGenres("short_term")}>Last 4 weeks</button>
+                <button className={styles.timeRangeButton} onClick={() => fetchTopGenres("medium_term")}>Last 6 months</button>
+                <button className={styles.timeRangeButton} onClick={() => fetchTopGenres("long_term")}>Last 12 months</button>
+            </div>
 
+            <div className={`grid gridResponsive ${styles.genreGrid}`}>
+                {topGenres.map((genre, index) => (
                     <motion.div
-                        className={styles.genreCard}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                        key={index}
+                        className={`card ${styles.genreCard}`}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.1 }}
+                        whileHover={{ scale: 1.02, x: 10 }}
                     >
-                        <h3>Rock</h3>
-                        <p>32% of your listening time</p>
+                        <div className={styles.genreInfo}>
+                            <h3>{genre}</h3>
+                            <p>#{index + 1}</p>
+                        </div>
                     </motion.div>
-
-                    <motion.div
-                        className={styles.genreCard}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                    >
-                        <h3>Electronic</h3>
-                        <p>23% of your listening time</p>
-                    </motion.div>
-                </div>
-            </motion.main>
+                ))}
+            </div>
+        </motion.main>
     );
 }

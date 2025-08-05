@@ -1,8 +1,29 @@
 "use client";
 import { motion } from "framer-motion";
 import styles from "./artists.module.css";
+import React, { useState, useEffect } from "react";
+import { getTopArtists } from "@/utils/spotify";
+import Image from "next/image";
+
+interface Artist {
+  name: string;
+  images: { url: string }[];
+  followers: { total: number };
+}
 
 export default function Artists() {
+  const [topArtists, setTopArtists] = useState<{ items: Artist[] }>({ items: [] });
+
+    const fetchTopArtists = async (timeRange: 'short_term' | 'medium_term' | 'long_term') => {
+        const artists = await getTopArtists(timeRange);
+        setTopArtists(artists);
+    };
+
+    useEffect(() => {
+        fetchTopArtists("medium_term");
+    }, []);
+
+
   return (
     <motion.main
       className="main"
@@ -16,45 +37,34 @@ export default function Artists() {
             Your top artists based on listening frequency and time spent.
           </p>
 
+        <div>
+            <button className={styles.timeRangeButton} onClick={() => fetchTopArtists("short_term")}>Last 4 weeks</button>
+            <button className={styles.timeRangeButton} onClick={() => fetchTopArtists("medium_term")}>Last 6 months</button>
+            <button className={styles.timeRangeButton} onClick={() => fetchTopArtists("long_term")}>Last 12 months</button>
+        </div>
+
           <div className={`grid gridResponsive ${styles.artistGrid}`}>
-            <motion.div
-              className={`card ${styles.artistCard}`}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.15 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <div className={`image imageCircle ${styles.artistImage}`}></div>
-              <h3>Artist Name 1</h3>
-              <p>152 plays this month</p>
-              <span className={`rank ${styles.rank}`}>#1</span>
-            </motion.div>
-
-            <motion.div
-              className={`card ${styles.artistCard}`}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.15 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <div className={`image imageCircle ${styles.artistImage}`}></div>
-              <h3>Artist Name 2</h3>
-              <p>128 plays this month</p>
-              <span className={`rank ${styles.rank}`}>#2</span>
-            </motion.div>
-
-            <motion.div
-              className={`card ${styles.artistCard}`}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.15 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              <div className={`image imageCircle ${styles.artistImage}`}></div>
-              <h3>Artist Name 3</h3>
-              <p>95 plays this month</p>
-              <span className={`rank ${styles.rank}`}>#3</span>
-            </motion.div>
+            {topArtists.items.map((artist, index) => (
+              <motion.div
+                key={index}
+                className={`card ${styles.artistCard}`}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.15 }}
+                whileHover={{ scale: 1.02 }}
+              >
+                <Image 
+                  className={`image imageCircle ${styles.artistImage}`} 
+                  src={artist.images[0]?.url || '/placeholder-artist.png'} 
+                  alt={artist.name}
+                  width={200}
+                  height={200}
+                />
+                <h3>{artist.name}</h3>
+                <p>{artist.followers.total} followers</p>
+                <span className={`rank ${styles.rank}`}>#{index + 1}</span>
+              </motion.div>
+            ))}
           </div>
         </motion.main>
   );

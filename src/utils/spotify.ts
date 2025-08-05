@@ -32,6 +32,7 @@ export function logout(): void {
   localStorage.removeItem('spotify_access_token');
   localStorage.removeItem('spotify_token_expires_at');
   localStorage.removeItem('spotify_auth_state');
+  localStorage.removeItem('spotify_user_info');
 }
 
 // Auth flow
@@ -83,6 +84,7 @@ export async function handleSpotifyCallback(): Promise<boolean> {
     });
     
     if (!response.ok) throw new Error('Token exchange failed');
+    // It fails even when the response is ok
     
     const data = await response.json();
     
@@ -116,4 +118,56 @@ export async function spotifyApiCall(endpoint: string) {
   }
 
   return response.json();
+}
+
+export async function getUserTopItems(type: 'artists' | 'tracks', timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50) {
+  return spotifyApiCall(`/me/top/${type}?time_range=${timeRange}&limit=${limit}`);
+}
+
+export async function getUserRecentlyPlayed(limit = 20) {
+  return spotifyApiCall(`/me/player/recently-played?limit=${limit}`);
+}
+
+export async function getUserSavedTracks(limit = 20, offset = 0) {
+  return spotifyApiCall(`/me/tracks?limit=${limit}&offset=${offset}`);
+}
+
+export async function getUserSavedAlbums(limit = 20, offset = 0) {
+  return spotifyApiCall(`/me/albums?limit=${limit}&offset=${offset}`);
+}
+
+export async function getUserPlaylists(limit = 20, offset = 0) {
+  return spotifyApiCall(`/me/playlists?limit=${limit}&offset=${offset}`);
+}
+
+interface Artist {
+  name: string;
+  images: { url: string }[];
+  followers: { total: number };
+  genres?: string[];
+}
+
+export async function getUserTopGenres(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term') {
+  const topArtists = await getUserTopItems('artists', timeRange, 50);
+  const genreMap: Record<string, number> = {};
+
+  // Count genres from top artists
+  for (const artist of topArtists.items as Artist[]) {
+    const genres = artist.genres || [];
+    for (const genre of genres) {
+      genreMap[genre] = (genreMap[genre] || 0) + 1;
+    }
+  }
+
+  // Just return the genre names in order (most popular first)
+  const sortedGenreNames = Object.entries(genreMap)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 10)
+    .map(([name]) => name);
+    
+  return sortedGenreNames;
+}
+
+export async function getTopArtists(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50) {
+  return spotifyApiCall(`/me/top/artists?time_range=${timeRange}&limit=${limit}`);
 }

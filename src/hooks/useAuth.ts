@@ -20,7 +20,20 @@ interface UserInfo {
 export function useAuth() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(() => {
+    // Load user info from localStorage on initialization
+    if (typeof window !== 'undefined') {
+      const storedUserInfo = localStorage.getItem('spotify_user_info');
+      if (storedUserInfo) {
+        try {
+          return JSON.parse(storedUserInfo);
+        } catch (error) {
+          console.error('Failed to parse stored user info:', error);
+        }
+      }
+    }
+    return null;
+  });
 
   const fetchUserData = async () => {
     try {
@@ -34,6 +47,8 @@ export function useAuth() {
       if (response.ok) {
         const userData = await response.json();
         setUserInfo(userData);
+        // Store user info in localStorage
+        localStorage.setItem('spotify_user_info', JSON.stringify(userData));
       }
     } catch (error) {
       console.error('Failed to fetch user data:', error);
@@ -55,15 +70,20 @@ export function useAuth() {
       const authenticated = isAuthenticated();
       setIsLoggedIn(authenticated);
       
-      if (authenticated) {
-        await fetchUserData();
+      if (getAccessToken() && authenticated) {
+          await fetchUserData();
+      } else {
+        if (userInfo) {
+          setUserInfo(null);
+          localStorage.removeItem('spotify_user_info');
+        }
       }
       
       setLoading(false);
     };
 
     initAuth();
-  }, []);
+  }, [userInfo]);
 
   const login = () => {
     window.location.href = getSpotifyAuthUrl();
@@ -73,6 +93,10 @@ export function useAuth() {
     logout();
     setIsLoggedIn(false);
     setUserInfo(null);
+    // Clear user info from localStorage on logout
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('spotify_user_info');
+    }
   };
 
   return { isLoggedIn, loading, userInfo, login, logout: handleLogout };

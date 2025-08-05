@@ -1,8 +1,33 @@
 "use client";
+import React, { useState, useEffect } from "react";
 import styles from "./tracks.module.css";
 import { motion } from "framer-motion";
+import { getUserTopItems } from "@/utils/spotify";
+import Image from "next/image";
+
+interface Track {
+    name: string;
+    artists: { name: string }[];
+    album: {
+        images: { url: string }[];
+    };
+    playcount?: number;
+    popularity?: number;
+    danceability?: number;
+}
 
 export default function Tracks() {
+    const [topTracks, setTopTracks] = useState<{ items: Track[] }>({ items: [] });
+
+    const fetchTopTracks = async (timeRange: 'short_term' | 'medium_term' | 'long_term') => {
+        const tracks = await getUserTopItems("tracks", timeRange);
+        setTopTracks(tracks);
+    }
+
+    useEffect(() => {
+        fetchTopTracks("medium_term");
+    }, []);
+    
     return (
         <motion.main
             className={`main`}
@@ -18,11 +43,17 @@ export default function Tracks() {
                 >
                     <h1 className="title">Most Popular Tracks</h1>
                     <p className="description">
-                        Your most played songs and current favorites.
+                        Your most played songs.
                     </p>
 
+                    <div>
+                        <button className={styles.timeRangeButton} onClick={() => fetchTopTracks("short_term")}>Last 4 weeks</button>
+                        <button className={styles.timeRangeButton} onClick={() => fetchTopTracks("medium_term")}>Last 6 months</button>
+                        <button className={styles.timeRangeButton} onClick={() => fetchTopTracks("long_term")}>Last 12 months</button>
+                    </div>
+
                     <div className={styles.trackList}>
-                        {[1, 2, 3, 4, 5].map((index) => (
+                        {topTracks.items.map((track, index) => (
                             <motion.div
                                 key={index}
                                 className={`card ${styles.trackCard}`}
@@ -32,14 +63,20 @@ export default function Tracks() {
                                 whileHover={{ scale: 1.02, x: 10 }}
                             >
                                 <div className={styles.trackInfo}>
-                                    <div className={`image ${styles.trackImage}`}></div>
+                                    <Image 
+                                      className={`image ${styles.trackImage}`} 
+                                      src={track?.album.images[0]?.url || '/placeholder-album.png'} 
+                                      alt={track?.name || 'Track'}
+                                      width={80}
+                                      height={80}
+                                    />
                                     <div className={styles.trackDetails}>
-                                        <h3>Track Name {index}</h3>
-                                        <p>Artist Name</p>
-                                        <span className={styles.playCount}>{150 - index * 20} plays</span>
+                                        <h3>{track?.name}</h3>
+                                        <p>{track.artists.map((artist: { name: string }) => artist.name).join(", ")}</p>
+                                        <span className={styles.playCount}>{track?.playcount} plays</span>
                                     </div>
                                 </div>
-                                <div className={styles.trackRank}>#{index}</div>
+                                <div className={styles.trackRank}>#{index + 1}</div>
                             </motion.div>
                         ))}
                     </div>
