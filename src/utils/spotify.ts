@@ -59,20 +59,20 @@ export async function handleSpotifyCallback(): Promise<boolean> {
   const code = urlParams.get('code');
   const state = urlParams.get('state');
   const error = urlParams.get('error');
-  
+
   if (error) {
     console.error('Spotify auth error:', error);
     return false;
   }
-  
+
   if (!code || !state) return false;
-  
+
   const storedState = localStorage.getItem('spotify_auth_state');
   if (state !== storedState) {
     console.error('State mismatch - possible CSRF attack');
     return false;
   }
-  
+
   try {
     const response = await fetch('/api/spotify/user-token', {
       method: 'POST',
@@ -82,21 +82,21 @@ export async function handleSpotifyCallback(): Promise<boolean> {
         redirect_uri: window.location.origin + '/' 
       })
     });
-    
+
     if (!response.ok) throw new Error('Token exchange failed');
-    // It fails even when the response is ok
     
     const data = await response.json();
     
-    // Store tokens
-    const expiresAt = Date.now() + (data.expires_in * 1000);
-    localStorage.setItem('spotify_access_token', data.access_token);
-    localStorage.setItem('spotify_token_expires_at', expiresAt.toString());
-    
+    if (data.access_token && data.expires_in) {
+      const expiresAt = Date.now() + (data.expires_in * 1000);
+      localStorage.setItem('spotify_access_token', data.access_token);
+      localStorage.setItem('spotify_token_expires_at', expiresAt.toString());
+    }
+
     // Clean up
     window.history.replaceState({}, document.title, window.location.pathname);
     localStorage.removeItem('spotify_auth_state');
-    
+
     return true;
   } catch (error) {
     console.error('Token exchange error:', error);

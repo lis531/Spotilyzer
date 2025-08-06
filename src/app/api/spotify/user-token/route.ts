@@ -29,7 +29,13 @@ export async function POST(request: NextRequest) {
     });
 
     if (!tokenResponse.ok) {
-      return NextResponse.json({ error: 'Token exchange failed' }, { status: 400 });
+      const errorText = await tokenResponse.text();
+      if (errorText.includes('invalid_grant')) {
+        console.warn('Suppressing duplicate token exchange error: invalid_grant');
+        return NextResponse.json({ access_token: null, expires_in: null }, { status: 200 });
+      }
+      console.error('Spotify token endpoint error:', tokenResponse.status, errorText);
+      return NextResponse.json({ error: 'Token exchange failed', details: errorText }, { status: 400 });
     }
 
     const tokenData = await tokenResponse.json();
