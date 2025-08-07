@@ -25,7 +25,7 @@ A Next.js application that analyzes your Spotify listening habits and provides i
 - After logging in, you grant permission to Spotilyzer
 - Your access token is stored securely in your browser
 - Spotilyzer fetches your personalized music data
-- You can logout anytime to revoke access
+- You can log out anytime to revoke access
 
 ### Your Privacy & Security:
 - ✅ Your Spotify password is never seen by Spotilyzer

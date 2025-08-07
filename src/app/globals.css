@@ -102,23 +102,6 @@ a {
   max-width: 600px;
 }
 
-/* Navigation */
-.backLink {
-  color: var(--spotify-green);
-  text-decoration: none;
-  font-size: 1.1rem;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-  display: inline-block;
-  text-align: center;
-}
-
-.backLink:hover {
-  background-color: rgba(29, 185, 84, 0.1);
-}
-
 /* Cards */
 .card {
   background: var(--background);
@@ -157,14 +140,6 @@ a {
 }
 
 /* Utilities */
-.textCenter {
-  text-align: center;
-}
-
-.spacingBottom {
-  margin-bottom: 3rem;
-}
-
 .rank {
   background: var(--spotify-green);
   color: white;

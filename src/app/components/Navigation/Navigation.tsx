@@ -59,7 +59,7 @@ export default function Navigation() {
                         <AnimatePresence>
                             {showPopular && (
                                 <motion.ul
-                                    className={styles.dropdownList}
+                                    className={`${styles.dropdownList} ${styles.active}`}
                                     initial={{ opacity: 0, scaleY: 0, transformOrigin: "top" }}
                                     animate={{ opacity: 1, scaleY: 1 }}
                                     exit={{ opacity: 0, scaleY: 0 }}
@@ -67,27 +67,39 @@ export default function Navigation() {
                                     style={{ overflow: "hidden" }}
                                 >
                                     <motion.li
+                                        className={`${styles.dropdownItem} ${pathname === '/tracks' ? styles.active : ''}`}
                                         initial={{ opacity: 0, x: "100%", skewX: -10 }}
                                         animate={{ opacity: 1, x: 0, skewX: 0 }}
                                         exit={{ opacity: 0, x: "100%", skewX: -10 }}
                                         transition={{ delay: 0.05, duration: 0.15, ease: "easeInOut" }}
                                     >
+                                        {pathname === '/tracks' && (
+                                            <div className={styles.highlightDropdown} />
+                                        )}
                                         <Link href="/tracks">Tracks</Link>
                                     </motion.li>
                                     <motion.li
+                                        className={`${styles.dropdownItem} ${pathname === '/genres' ? styles.active : ''}`}
                                         initial={{ opacity: 0, x: "100%", skewX: -10 }}
                                         animate={{ opacity: 1, x: 0, skewX: 0 }}
                                         exit={{ opacity: 0, x: "100%", skewX: -10 }}
                                         transition={{ delay: 0.1, duration: 0.15, ease: "easeInOut" }}
                                     >
+                                        {pathname === '/genres' && (
+                                            <div className={styles.highlightDropdown} />
+                                        )}
                                         <Link href="/genres">Genres</Link>
                                     </motion.li>
                                     <motion.li
+                                        className={`${styles.dropdownItem} ${pathname === '/artists' ? styles.active : ''}`}
                                         initial={{ opacity: 0, x: "100%", skewX: -10 }}
                                         animate={{ opacity: 1, x: 0, skewX: 0 }}
                                         exit={{ opacity: 0, x: "100%", skewX: -10 }}
                                         transition={{ delay: 0.15, duration: 0.15, ease: "easeInOut" }}
                                     >
+                                        {pathname === '/artists' && (
+                                            <div className={styles.highlightDropdown} />
+                                        )}
                                         <Link href="/artists">Artists</Link>
                                     </motion.li>
                                 </motion.ul>

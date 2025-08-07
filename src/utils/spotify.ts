@@ -160,12 +160,10 @@ export async function getUserTopGenres(timeRange: 'short_term' | 'medium_term' |
   }
 
   // Just return the genre names in order (most popular first)
-  const sortedGenreNames = Object.entries(genreMap)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 10)
-    .map(([name]) => name);
-    
-  return sortedGenreNames;
+  return Object.entries(genreMap)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 10)
+      .map(([name]) => name);
 }
 
 export async function getTopArtists(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50) {
