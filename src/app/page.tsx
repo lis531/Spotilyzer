@@ -52,7 +52,36 @@ export default function Home() {
                 </div>
               </div>
             </div>
-
+            <div className={styles.decadesContainer}>
+              <h2 className={styles.h2}>By decades</h2>
+              {/* pie chart */}
+              <div className={styles.pieChartContainer}>
+                <div className={styles.pieChart}></div>
+              </div>
+              {/* divs for decades */}
+              <div className={styles.decadesGrid}>
+                <div className={`card ${styles.decadesCard}`}>
+                  <h3 className={styles.h3}>2020s</h3>
+                  <p className={styles.text}>Top genre: Pop</p>
+                </div>
+                <div className={`card ${styles.decadesCard}`}>
+                  <h3 className={styles.h3}>2010s</h3>
+                  <p className={styles.text}>Top genre: Hip-Hop</p>
+                </div>
+                <div className={`card ${styles.decadesCard}`}>
+                  <h3 className={styles.h3}>2000s</h3>
+                  <p className={styles.text}>Top genre: Rock</p>
+                </div>
+                <div className={`card ${styles.decadesCard}`}>
+                  <h3 className={styles.h3}>1990s</h3>
+                  <p className={styles.text}>Top genre: R&B</p>
+                </div>
+                <div className={`card ${styles.decadesCard}`}>
+                  <h3 className={styles.h3}>1980s</h3>
+                  <p className={styles.text}>Top genre: Synth-pop</p>
+                </div>
+              </div>
+            </div>
             <p className={styles.disclaimer}>
               <strong>Disclaimer:</strong> This application is not affiliated with Spotify.
             </p>

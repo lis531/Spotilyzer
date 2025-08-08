@@ -34,7 +34,7 @@
 .trackImage {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, var(--spotify-green), var(--spotify-green-light));
+  background: var(--gradient-primary);
   border-radius: 8px;
   flex-shrink: 0;
 }
@@ -46,17 +46,17 @@
 }
 
 .trackDetails h3 {
-  margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--foreground);
 }
 
 .trackDetails p {
-  margin: 0;
   color: var(--foreground-muted);
   font-size: 0.9rem;
 }
+
+.trackDetails h3, .trackDetails p { margin: 0; }
 
 .playCount {
   font-size: 0.8rem;

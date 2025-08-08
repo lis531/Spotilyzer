@@ -5,6 +5,7 @@
   --foreground-muted: #666666;
   --spotify-green: #1db954;
   --spotify-green-light: #1ed760;
+  --gradient-primary: linear-gradient(135deg, var(--spotify-green), var(--spotify-green-light));
 }
 
 @media (prefers-color-scheme: dark) {
@@ -39,7 +40,6 @@ body {
   margin: 0;
 }
 
-/* Reset button styles to inherit font properties */
 button {
   font-family: inherit;
   font-size: inherit;
@@ -88,7 +88,7 @@ a {
   font-weight: bold;
   text-align: center;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, var(--spotify-green), var(--spotify-green-light));
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -99,7 +99,23 @@ a {
   text-align: center;
   margin-bottom: 3rem;
   color: #666;
-  max-width: 600px;
+}
+
+h1 {
+  font-size: 2rem;
+  line-height: 2.5rem;
+  font-weight: 600;
+  margin: 2rem 0 1rem;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  color: var(--spotify-green);
+  text-align: center;
 }
 
 /* Cards */
@@ -132,7 +148,7 @@ a {
 /* Images and Icons */
 .image {
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--spotify-green), var(--spotify-green-light));
+  background: var(--gradient-primary);
 }
 
 .imageCircle {

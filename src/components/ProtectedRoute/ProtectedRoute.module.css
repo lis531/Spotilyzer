@@ -8,8 +8,6 @@
 
 .loadingContainer p {
   font-size: 1.2rem;
-  color: var(--foreground);
-  opacity: 0.8;
 }
 
 .authContainer {
@@ -28,7 +26,7 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #1db954, #1ed760);
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -38,15 +36,13 @@
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 2rem;
-  color: var(--foreground);
-  opacity: 0.8;
 }
 
 .spotifyButton {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: linear-gradient(135deg, #1db954, #1ed760);
+  background: var(--gradient-primary);
   color: white;
   border: none;
   padding: 16px 32px;
@@ -77,13 +73,14 @@
 
 .authDisclaimer {
   font-size: 0.9rem;
-  color: var(--foreground);
-  opacity: 0.6;
   line-height: 1.4;
   max-width: 400px;
+  color: var(--foreground);
+  opacity: 0.6;
 }
 
-/* Dark mode adjustments */
+.loadingContainer p, .authDescription { color: var(--foreground); opacity: 0.8; }
+
 @media (prefers-color-scheme: dark) {
   .authTitle {
     background: linear-gradient(135deg, #1ed760, #1db954);
@@ -93,7 +90,6 @@
   }
 }
 
-/* Mobile responsiveness */
 @media (max-width: 768px) {
   .authContainer {
     padding: 1rem;

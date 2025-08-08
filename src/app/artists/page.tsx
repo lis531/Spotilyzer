@@ -4,6 +4,7 @@ import styles from "./artists.module.css";
 import React, { useState, useEffect } from "react";
 import { getTopArtists } from "@/utils/spotify";
 import Image from "next/image";
+import TimeRangeButtons from "../components/TimeRangeButtons/TimeRangeButtons";
 
 interface Artist {
   name: string;
@@ -37,13 +38,9 @@ export default function Artists() {
             Your top artists based on listening frequency and time spent.
           </p>
 
-        <div>
-            <button className={styles.timeRangeButton} onClick={() => fetchTopArtists("short_term")}>Last 4 weeks</button>
-            <button className={styles.timeRangeButton} onClick={() => fetchTopArtists("medium_term")}>Last 6 months</button>
-            <button className={styles.timeRangeButton} onClick={() => fetchTopArtists("long_term")}>Last 12 months</button>
-        </div>
+          <TimeRangeButtons onTimeRangeChange={fetchTopArtists} />
 
-          <div className={`grid gridResponsive ${styles.artistGrid}`}>
+          <div className={`grid gridResponsive`}>
             {topArtists.items.map((artist, index) => (
               <motion.div
                 key={index}

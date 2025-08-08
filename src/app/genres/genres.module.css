@@ -3,7 +3,7 @@
 }
 
 .genreCard {
-  background: linear-gradient(135deg, #1db954, #1ed760);
+  background: var(--gradient-primary);
   padding: 2rem;
   border-radius: 12px;
   text-align: center;

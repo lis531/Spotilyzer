@@ -3,6 +3,7 @@ import styles from "./genres.module.css";
 import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import { getUserTopGenres } from "@/utils/spotify";
+import TimeRangeButtons from "../components/TimeRangeButtons/TimeRangeButtons";
 
 export default function Genres() {
     const [topGenres, setTopGenres] = useState<string[]>([]);
@@ -28,11 +29,7 @@ export default function Genres() {
                 Discover your top music genres and explore new ones based on your listening habits.
             </p>
 
-            <div>
-                <button className={styles.timeRangeButton} onClick={() => fetchTopGenres("short_term")}>Last 4 weeks</button>
-                <button className={styles.timeRangeButton} onClick={() => fetchTopGenres("medium_term")}>Last 6 months</button>
-                <button className={styles.timeRangeButton} onClick={() => fetchTopGenres("long_term")}>Last 12 months</button>
-            </div>
+            <TimeRangeButtons onTimeRangeChange={fetchTopGenres} />
 
             <div className={`grid gridResponsive ${styles.genreGrid}`}>
                 {topGenres.map((genre, index) => (

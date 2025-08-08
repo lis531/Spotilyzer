@@ -4,6 +4,7 @@ import styles from "./tracks.module.css";
 import { motion } from "framer-motion";
 import { getUserTopItems } from "@/utils/spotify";
 import Image from "next/image";
+import TimeRangeButtons from "../components/TimeRangeButtons/TimeRangeButtons";
 
 interface Track {
     name: string;
@@ -46,11 +47,7 @@ export default function Tracks() {
                         Your most played songs.
                     </p>
 
-                    <div>
-                        <button className={styles.timeRangeButton} onClick={() => fetchTopTracks("short_term")}>Last 4 weeks</button>
-                        <button className={styles.timeRangeButton} onClick={() => fetchTopTracks("medium_term")}>Last 6 months</button>
-                        <button className={styles.timeRangeButton} onClick={() => fetchTopTracks("long_term")}>Last 12 months</button>
-                    </div>
+                    <TimeRangeButtons onTimeRangeChange={fetchTopTracks} />
 
                     <div className={styles.trackList}>
                         {topTracks.items.map((track, index) => (
@@ -59,7 +56,7 @@ export default function Tracks() {
                                 className={`card ${styles.trackCard}`}
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: index * 0.1, duration: 0.3 }}
+                                transition={{ delay: index * 0.07, duration: 0.3 }}
                                 whileHover={{ scale: 1.02, x: 10 }}
                             >
                                 <div className={styles.trackInfo}>

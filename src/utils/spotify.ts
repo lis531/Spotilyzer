@@ -159,7 +159,6 @@ export async function getUserTopGenres(timeRange: 'short_term' | 'medium_term' |
     }
   }
 
-  // Just return the genre names in order (most popular first)
   return Object.entries(genreMap)
       .sort(([, a], [, b]) => b - a)
       .slice(0, 10)
