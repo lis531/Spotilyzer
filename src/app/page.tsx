@@ -32,23 +32,61 @@ export default function Home() {
               Dive deep into your Spotify data to uncover trends, favorite genres, and more.
             </p>
 
-            <div className={styles.moodsSection}>
+            <div className={styles.summaryContainer}>
+              <h1 className={styles.h1}>
+                Your Quick Summary
+              </h1>
+              <div className={`card`}>
+                <h2>Top Tracks (This Month)</h2>
+                <ol>
+                  <li>Track 1</li>
+                  <li>Track 1</li>
+                  <li>Track 1</li>
+                  <li>Track 1</li>
+                  <li>Track 1</li>
+                </ol>
+              </div>
+
+            </div>
+
+            {/* energy
+            tempo
+            valence
+            danceability
+            instrumentalness
+            speechiness*/}
+            <div className={styles.moodsContainer}>
               <h1 className={styles.h1}>
                 Your Moods
               </h1>
               <div className={styles.moodGrid}>
                 <div className={`card ${styles.moodCard}`}>
                   <h2 className={styles.h2}>Happiness</h2>
-                  <p className={styles.text}>Favorite song:</p>
+                  <progress value={70} max={100} />
+                  <p className={styles.description}>Mostly upbeat, positive songs.</p>
+                  <b>Happiest:</b>
+                  <p>Happy Song Title</p>
                 </div>
                 <div className={`card ${styles.moodCard}`}>
                   <h2 className={styles.h2}>Danceability</h2>
+                  <progress value={80} max={100} />
+                  <p className={styles.description}>Great for dancing and moving.</p>
+                  <b>Most danceable:</b>
+                  <p>Danceable Song Title</p>
                 </div>
                 <div className={`card ${styles.moodCard}`}>
                   <h2 className={styles.h2}>Energy</h2>
+                  <progress value={90} max={100} />
+                  <p className={styles.description}>High energy tracks to keep you moving.</p>
+                  <b>Most energetic:</b>
+                  <p>Energetic Song Title</p>
                 </div>
                 <div className={`card ${styles.moodCard}`}>
                   <h2 className={styles.h2}>Acousticness</h2>
+                  <progress value={60} max={100} />
+                  <p className={styles.description}>Soft and calming acoustic tracks.</p>
+                  <b>Most acoustic:</b>
+                  <p>Acoustic Song Title</p>
                 </div>
               </div>
             </div>

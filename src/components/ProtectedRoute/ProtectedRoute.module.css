@@ -43,7 +43,7 @@
   align-items: center;
   gap: 12px;
   background: var(--gradient-primary);
-  color: white;
+  color: var(--white);
   border: none;
   padding: 16px 32px;
   border-radius: 50px;
@@ -57,7 +57,7 @@
 
 .spotifyButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(29, 185, 84, 0.4);
+  box-shadow: var(--shadow-green-strong);
   background: linear-gradient(135deg, #1ed760, #1db954);
 }
 

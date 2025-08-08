@@ -7,8 +7,23 @@
 
 .timeRangeButton {
     background: transparent;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 0.5rem 1rem;
+    border: 1px solid var(--foreground-muted);
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
     cursor: pointer;
+    color: var(--foreground);
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.timeRangeButton:hover {
+    background: var(--overlay-green-light);
+    border-color: var(--border-green);
+    color: var(--spotilyzer-green);
+}
+
+.timeRangeButton.active {
+    background: var(--gradient-primary);
+    border-color: var(--spotilyzer-green);
+    color: var(--white);
 }

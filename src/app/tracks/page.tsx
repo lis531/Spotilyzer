@@ -7,6 +7,7 @@ import Image from "next/image";
 import TimeRangeButtons from "../components/TimeRangeButtons/TimeRangeButtons";
 
 interface Track {
+    id: string;
     name: string;
     artists: { name: string }[];
     album: {
@@ -23,7 +24,7 @@ export default function Tracks() {
     const fetchTopTracks = async (timeRange: 'short_term' | 'medium_term' | 'long_term') => {
         const tracks = await getUserTopItems("tracks", timeRange);
         setTopTracks(tracks);
-    }
+    };
 
     useEffect(() => {
         fetchTopTracks("medium_term");
@@ -37,47 +38,47 @@ export default function Tracks() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
         >
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                >
-                    <h1 className="title">Most Popular Tracks</h1>
-                    <p className="description">
-                        Your most played songs.
-                    </p>
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
+                <h1 className="title">Most Popular Tracks</h1>
+                <p className="description">
+                    Your most played songs.
+                </p>
 
-                    <TimeRangeButtons onTimeRangeChange={fetchTopTracks} />
+                <TimeRangeButtons onTimeRangeChange={fetchTopTracks} />
 
-                    <div className={styles.trackList}>
-                        {topTracks.items.map((track, index) => (
-                            <motion.div
-                                key={index}
-                                className={`card ${styles.trackCard}`}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: index * 0.07, duration: 0.3 }}
-                                whileHover={{ scale: 1.02, x: 10 }}
-                            >
-                                <div className={styles.trackInfo}>
-                                    <Image 
-                                      className={`image ${styles.trackImage}`} 
-                                      src={track?.album.images[0]?.url || '/placeholder-album.png'} 
-                                      alt={track?.name || 'Track'}
-                                      width={80}
-                                      height={80}
-                                    />
-                                    <div className={styles.trackDetails}>
-                                        <h3>{track?.name}</h3>
-                                        <p>{track.artists.map((artist: { name: string }) => artist.name).join(", ")}</p>
-                                        <span className={styles.playCount}>{track?.playcount} plays</span>
-                                    </div>
+                <div className={styles.trackList}>
+                    {topTracks.items.map((track, index) => (
+                        <motion.div
+                            key={index}
+                            className={`card ${styles.trackCard}`}
+                            initial={{ opacity: 0, x: -30 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.15 }}
+                            whileHover={{ scale: 1.02, x: 25 }}
+                            onClick={() => window.open(`https://open.spotify.com/track/${track.id}`, "_blank")}
+                        >
+                            <div className={styles.trackInfo}>
+                                <Image 
+                                  className={`image ${styles.trackImage}`} 
+                                  src={track?.album.images[0]?.url || '/placeholder-album.png'} 
+                                  alt={track?.name || 'Track'}
+                                  width={80}
+                                  height={80}
+                                />
+                                <div className={styles.trackDetails}>
+                                    <h3>{track?.name}</h3>
+                                    <p>{track.artists.map((artist: { name: string }) => artist.name).join(", ")}</p>
                                 </div>
-                                <div className={styles.trackRank}>#{index + 1}</div>
-                            </motion.div>
-                        ))}
-                    </div>
-                </motion.div>
-            </motion.main>
+                            </div>
+                            <div className={styles.trackRank}>#{index + 1}</div>
+                        </motion.div>
+                    ))}
+                </div>
+            </motion.div>
+        </motion.main>
     );
 }

@@ -10,8 +10,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border-light);
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.3s ease;
@@ -19,8 +18,8 @@
 }
 
 .trackCard:hover {
-  background: linear-gradient(135deg, rgba(29, 185, 84, 0.1), rgba(30, 215, 96, 0.05));
-  border-color: rgba(29, 185, 84, 0.3);
+  background: var(--gradient-green-medium);
+  border-color: var(--border-green-strong);
   box-shadow: 0 8px 25px rgba(29, 185, 84, 0.15);
 }
 
@@ -58,16 +57,10 @@
 
 .trackDetails h3, .trackDetails p { margin: 0; }
 
-.playCount {
-  font-size: 0.8rem;
-  color: var(--spotify-green);
-  font-weight: 500;
-}
-
 .trackRank {
   font-size: 1.5rem;
   font-weight: bold;
-  color: var(--spotify-green);
+  color: var(--spotilyzer-green);
   min-width: 60px;
   text-align: center;
 }

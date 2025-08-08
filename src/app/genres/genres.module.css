@@ -3,13 +3,15 @@
 }
 
 .genreCard {
-  background: var(--gradient-primary);
+  background: var(--gradient-green-medium);
   padding: 2rem;
   border-radius: 12px;
   text-align: center;
-  color: white;
+  color: var(--spotilyzer-green);
+  border: 1px solid var(--spotilyzer-light-green);
+  box-shadow: var(--shadow-default);
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: box-shadow 0.2s ease;
 }
 
 .genreCard h3 {

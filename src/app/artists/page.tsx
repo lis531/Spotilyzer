@@ -7,6 +7,7 @@ import Image from "next/image";
 import TimeRangeButtons from "../components/TimeRangeButtons/TimeRangeButtons";
 
 interface Artist {
+  id: string;
   name: string;
   images: { url: string }[];
   followers: { total: number };
@@ -49,6 +50,7 @@ export default function Artists() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.15 }}
                 whileHover={{ scale: 1.02 }}
+                onClick={() => window.open(`https://open.spotify.com/artist/${artist.id}`, "_blank")}
               >
                 <Image 
                   className={`image imageCircle ${styles.artistImage}`} 

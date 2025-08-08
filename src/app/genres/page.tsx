@@ -38,7 +38,7 @@ export default function Genres() {
                         className={`card ${styles.genreCard}`}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.1 }}
+                        transition={{ duration: 0.15 }}
                         whileHover={{ scale: 1.02, x: 10 }}
                     >
                         <div className={styles.genreInfo}>

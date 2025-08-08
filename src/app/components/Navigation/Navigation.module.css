@@ -6,12 +6,12 @@
   display: flex;
   gap: 1rem;
   align-items: center;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--overlay-white);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   padding: 1rem 2rem;
   border-radius: 0 0 12px 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-default);
   z-index: 1000;
   border: 1px solid rgba(240, 240, 240, 0.8);
   border-top: none;
@@ -28,7 +28,7 @@
   text-decoration: none;
   font-weight: 500;
   &:hover {
-    color: var(--spotify-green);
+    color: var(--spotilyzer-green);
   }
 }
 
@@ -39,15 +39,15 @@
   border-radius: 8px;
 }
 .highlight {
-  background: linear-gradient(135deg, rgba(29, 185, 84, 0.1), rgba(30, 215, 96, 0.1));
-  border: 1px solid rgba(29, 185, 84, 0.2);
+  background: var(--gradient-green-medium);
+  border: 1px solid var(--border-green);
   z-index: 1;
   pointer-events: none;
   will-change: transform;
 }
 .highlightDropdown {
-  background: linear-gradient(135deg, rgba(9, 83, 36, 0.2), rgba(54, 116, 76, 0.2));
-  border: 1px solid rgba(19, 138, 60, 0.3);
+  background: var(--gradient-green-strong);
+  border: 1px solid var(--border-green-strong);
   z-index: -1;
 }
 
@@ -60,7 +60,7 @@
 }
 
 .button:hover,
-.button.active { color: var(--spotify-green); }
+.button.active { color: var(--spotilyzer-green); }
 
 .navLink, .button {
   padding: 0.5rem 1rem;
@@ -74,7 +74,7 @@
   box-sizing: border-box;
 }
 
-.active { color: var(--spotify-green); }
+.active { color: var(--spotilyzer-green); }
 
 .dropdownContainer {
   position: relative;
@@ -89,7 +89,7 @@
   width: 100%;
   text-align: center;
   list-style: none;
-  background: white;
+  background: var(--white);
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   padding: 0.5rem;
@@ -106,7 +106,7 @@
 }
 
 .dropdownItem:hover {
-  border: 1px solid rgba(30, 200, 100, 0.3);
+  border: 1px solid var(--border-green-strong);
 }
 
 .dropdownList li {
@@ -118,7 +118,7 @@
 }
 
 .dropdownList li:hover {
-  background-color: rgba(11, 78, 35, 0.1);
+  background-color: var(--overlay-green-light);
 }
 
 .dropdownList li a {
@@ -131,12 +131,12 @@
 }
 
 .dropdownList li:hover a {
-  color: var(--spotify-green);
+  color: var(--spotilyzer-light-green);
 }
 
 @media (prefers-color-scheme: dark) {
   .nav {
-    background: rgba(10, 10, 10, 0.95);
+    background: var(--overlay-dark);
     border-color: rgba(64, 64, 64, 0.8);
   }
   
@@ -146,11 +146,7 @@
   }
   
   .highlight {
-    background: linear-gradient(135deg, rgba(29, 185, 84, 0.2), rgba(30, 215, 96, 0.2));
-    border-color: rgba(29, 185, 84, 0.3);
+    background: var(--gradient-green-strong);
+    border-color: var(--border-green-strong);
   }
-}
-
-.hidden {
-  display: none;
 }

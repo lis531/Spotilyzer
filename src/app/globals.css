@@ -1,19 +1,52 @@
 :root {
-  --background: #ffffff;
-  --background-muted: #f9f9f9;
-  --foreground: #171717;
-  --foreground-muted: #666666;
-  --spotify-green: #1db954;
-  --spotify-green-light: #1ed760;
-  --gradient-primary: linear-gradient(135deg, var(--spotify-green), var(--spotify-green-light));
+  /* Base colors */
+  --white: #ffffff;
+  --black: #000000;
+  --gray-light: #f9f9f9;
+  --gray-medium: #666666;
+  --gray-dark: #171717;
+  --gray-darker: #0a0a0a;
+  
+  /* Spotilyzer brand colors */
+  --spotilyzer-green: #1db954;
+  --spotilyzer-light-green: #4de681;
+  
+  /* Semantic colors */
+  --background: var(--white);
+  --background-muted: var(--gray-light);
+  --foreground: var(--gray-dark);
+  --foreground-muted: var(--gray-medium);
+  
+  /* Interactive colors */
+  --border-light: rgba(255, 255, 255, 0.2);
+  --border-green: rgba(29, 185, 84, 0.2);
+  --border-green-strong: rgba(29, 185, 84, 0.3);
+  
+  /* Background overlays */
+  --overlay-white: rgba(255, 255, 255, 0.95);
+  --overlay-dark: rgba(10, 10, 10, 0.75);
+  --overlay-green-light: rgba(29, 185, 84, 0.05);
+  --overlay-green-medium: rgba(29, 185, 84, 0.1);
+  --overlay-green-strong: rgba(29, 185, 84, 0.2);
+  
+  /* Shadows */
+  --shadow-default: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --shadow-green: 0 8px 30px rgba(29, 185, 84, 0.2);
+  --shadow-green-strong: 0 6px 20px rgba(29, 185, 84, 0.4);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--spotilyzer-green), var(--spotilyzer-light-green));
+  --gradient-green-light: linear-gradient(135deg, var(--overlay-green-light), rgba(30, 215, 96, 0.05));
+  --gradient-green-medium: linear-gradient(135deg, var(--overlay-green-medium), rgba(30, 215, 96, 0.1));
+  --gradient-green-strong: linear-gradient(135deg, var(--overlay-green-strong), rgba(30, 215, 96, 0.2));
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --background-muted: #121212;
-    --foreground: #ededed;
-    --foreground-muted: #a1a1a1;
+    --background: var(--gray-darker);
+    --background-muted: var(--gray-dark);
+    --foreground: var(--gray-light);
+    --foreground-muted: var(--gray-medium);
   }
 }
 
@@ -98,7 +131,7 @@ a {
   font-size: 1.2rem;
   text-align: center;
   margin-bottom: 3rem;
-  color: #666;
+  color: var(--foreground-muted);
 }
 
 h1 {
@@ -114,7 +147,7 @@ h2 {
   line-height: 2rem;
   font-weight: 600;
   margin: 0 0 0.5rem;
-  color: var(--spotify-green);
+  color: var(--spotilyzer-green);
   text-align: center;
 }
 
@@ -122,15 +155,15 @@ h2 {
 .card {
   background: var(--background);
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-default);
   border: 1px solid var(--foreground-muted);
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .card:hover {
-  box-shadow: 0 8px 30px rgba(29, 185, 84, 0.2);
-  border-color: var(--spotify-green);
+  box-shadow: var(--shadow-green);
+  border-color: var(--spotilyzer-green);
 }
 
 /* Grids */
@@ -157,7 +190,7 @@ h2 {
 
 /* Utilities */
 .rank {
-  background: var(--spotify-green);
+  background: var(--spotilyzer-green);
   color: white;
   padding: 0.3rem 0.8rem;
   border-radius: 20px;
