@@ -23,40 +23,40 @@
 
 /* GitHub button */
 .contactButton:nth-child(2) {
-  background: rgba(85, 85, 85, 0.2);
-  border: 1px solid rgba(85, 85, 85, 0.1);
+  background: rgba(85, 85, 85, 0.13);
+  border: 1px solid rgba(85, 85, 85, 0.2);
   box-shadow: 0 4px 15px rgba(51, 51, 51, 0.2);
 
   &:hover {
     background: rgba(85, 85, 85, 0.3);
     border-color: rgba(85, 85, 85, 0.4);
-    box-shadow: 0 8px 25px rgba(51, 51, 51, 0.3);
+    box-shadow: 0 8px 25px rgba(51, 51, 51, 0.25);
   }
 }
 
 /* Twitter button */
 .contactButton:nth-child(3) {
-  background: rgba(29, 161, 242, 0.2);
-  border: 1px solid rgba(29, 161, 242, 0.1);
+  background: rgba(29, 161, 242, 0.13);
+  border: 1px solid rgba(29, 161, 242, 0.2);
   box-shadow: 0 4px 15px rgba(29, 161, 242, 0.2);
 
   &:hover {
     background: rgba(29, 161, 242, 0.3);
     border-color: rgba(29, 161, 242, 0.4);
-    box-shadow: 0 8px 25px rgba(29, 161, 242, 0.3);
+    box-shadow: 0 8px 25px rgba(29, 161, 242, 0.25);
   }
 }
 
 /* Email button */
 .contactButton:nth-child(4) {
-  background: rgba(255, 0, 0, 0.2);
-  border: 1px solid rgba(255, 0, 0, 0.1);
+  background: rgba(255, 0, 0, 0.13);
+  border: 1px solid rgba(255, 0, 0, 0.2);
   box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
 
   &:hover {
     background: rgba(255, 0, 0, 0.3);
     border-color: rgba(255, 0, 0, 0.4);
-    box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3);
+    box-shadow: 0 8px 25px rgba(255, 0, 0, 0.25);
   }
 }
 

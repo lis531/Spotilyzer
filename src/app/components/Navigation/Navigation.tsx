@@ -73,10 +73,7 @@ export default function Navigation() {
                                         exit={{ opacity: 0, x: "100%", skewX: -10 }}
                                         transition={{ delay: 0.05, duration: 0.15, ease: "easeInOut" }}
                                     >
-                                        {pathname === '/tracks' && (
-                                            <div className={styles.highlightDropdown} />
-                                        )}
-                                        <Link href="/tracks">Tracks</Link>
+                                        <Link href="/tracks?timeRange=medium_term">Tracks</Link>
                                     </motion.li>
                                     <motion.li
                                         className={`${styles.dropdownItem} ${pathname === '/genres' ? styles.active : ''}`}
@@ -85,10 +82,7 @@ export default function Navigation() {
                                         exit={{ opacity: 0, x: "100%", skewX: -10 }}
                                         transition={{ delay: 0.1, duration: 0.15, ease: "easeInOut" }}
                                     >
-                                        {pathname === '/genres' && (
-                                            <div className={styles.highlightDropdown} />
-                                        )}
-                                        <Link href="/genres">Genres</Link>
+                                        <Link href="/genres?timeRange=medium_term">Genres</Link>
                                     </motion.li>
                                     <motion.li
                                         className={`${styles.dropdownItem} ${pathname === '/artists' ? styles.active : ''}`}
@@ -97,10 +91,7 @@ export default function Navigation() {
                                         exit={{ opacity: 0, x: "100%", skewX: -10 }}
                                         transition={{ delay: 0.15, duration: 0.15, ease: "easeInOut" }}
                                     >
-                                        {pathname === '/artists' && (
-                                            <div className={styles.highlightDropdown} />
-                                        )}
-                                        <Link href="/artists">Artists</Link>
+                                        <Link href="/artists?timeRange=medium_term">Artists</Link>
                                     </motion.li>
                                 </motion.ul>
                             )}

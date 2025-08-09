@@ -23,7 +23,7 @@
 }
 
 .timeRangeButton.active {
-    background: var(--gradient-primary);
+    background: var(--gradient-green-strong);
     border-color: var(--spotilyzer-green);
     color: var(--white);
 }

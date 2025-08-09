@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { getUserTopItems } from "@/utils/spotify";
 import Image from "next/image";
 import TimeRangeButtons from "../components/TimeRangeButtons/TimeRangeButtons";
+import { useSearchParams } from "next/navigation";
 
 interface Track {
     id: string;
@@ -20,6 +21,7 @@ interface Track {
 
 export default function Tracks() {
     const [topTracks, setTopTracks] = useState<{ items: Track[] }>({ items: [] });
+    const searchParams = useSearchParams();
 
     const fetchTopTracks = async (timeRange: 'short_term' | 'medium_term' | 'long_term') => {
         const tracks = await getUserTopItems("tracks", timeRange);
@@ -27,8 +29,9 @@ export default function Tracks() {
     };
 
     useEffect(() => {
-        fetchTopTracks("medium_term");
-    }, []);
+        const timeRange = searchParams.get('timeRange') as 'short_term' | 'medium_term' | 'long_term' || 'medium_term';
+        fetchTopTracks(timeRange);
+    }, [searchParams]);
     
     return (
         <motion.main
