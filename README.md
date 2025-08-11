@@ -5,8 +5,7 @@ A Next.js application that analyzes your Spotify listening habits and provides i
 ## 🎵 Features
 
 - Spotify OAuth authentication
-- User profile and listening data analysis
-- Top tracks and artists visualization
+- User listening data analysis
 - Mood analysis based on audio features
 - Playlist creation capabilities
 
@@ -55,42 +54,11 @@ When you connect, you'll be asked to grant these permissions:
 
 ## 🎨 What You'll Discover
 
-### Music Analytics:
-- **Top Artists & Tracks**: See who and what you listen to most
-- **Genre Breakdown**: Discover your music taste profile
-- **Listening Patterns**: When and how often you listen
-- **Mood Analysis**: Happy, energetic, chill - what's your vibe?
-
-### Personalized Insights:
+### Music Analytics
 - **Music Journey**: How your taste has evolved
-- **Hidden Gems**: Lesser-known tracks you love
-- **Playlist Suggestions**: Custom playlists based on your preferences
-- **Share-worthy Stats**: Cool facts about your music habits
-
-## ❓ FAQ
-
-**Q: Is Spotilyzer free to use?**
-A: Yes! Completely free.
-
-**Q: Do I need Spotify Premium?**
-A: No, any Spotify account works (free or premium).
-
-**Q: Will this affect my Spotify recommendations?**
-A: No, Spotilyzer only reads your data - it doesn't change anything.
-
-**Q: Can I revoke access later?**
-A: Yes! Go to Spotify Settings > Privacy Settings > Apps and remove Spotilyzer.
-
-**Q: Do you store my data?**
-A: No, all data analysis happens in your browser. Nothing is saved on my servers.
-
-## 🚨 Troubleshooting
-
-**"Connection Failed"**: Make sure you're logged into Spotify in your browser first.
-
-**"Access Denied"**: You might have clicked "Cancel" during login. Try again and click "Agree".
-
-**"Data Not Loading"**: Clear your browser cache and try reconnecting.
+- **Genre Exploration**: Dive deeper into your favorite genres
+- **Playlist Suggestions**: Playlists created from your genres and moods
+- **Share-worthy Stats**: Cool facts about your music
 
 ## 🎵 Ready to Explore Your Music?
 
