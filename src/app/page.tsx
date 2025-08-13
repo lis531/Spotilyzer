@@ -2,9 +2,20 @@
 import styles from "./home.module.css";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
+import DecadesPieChart from "@/components/DecadesPieChart";
 
 export default function Home() {
   const { userInfo } = useAuth();
+
+  // Sample data for the decades pie chart
+  const decadesData = [
+    { decade: "2020s", count: 145, topGenre: "Pop" },
+    { decade: "2010s", count: 298, topGenre: "Hip-Hop" },
+    { decade: "2000s", count: 187, topGenre: "Rock" },
+    { decade: "1990s", count: 132, topGenre: "R&B" },
+    { decade: "1980s", count: 89, topGenre: "Synth-pop" },
+    { decade: "1970s", count: 45, topGenre: "Classic Rock" },
+  ];
 
   return (
     <motion.main
@@ -137,7 +148,7 @@ export default function Home() {
           <h1 className={styles.h2}>By Decades</h1>
           <div className={styles.headerLine}></div>
           <div className={styles.pieChartContainer}>
-            <div className={styles.pieChart}></div>
+            <DecadesPieChart data={decadesData} />
           </div>
           <div className={styles.decadesGrid}>
             <div className={`card ${styles.decadesCard}`}>

@@ -1,0 +1,19 @@
+.chartContainer {
+  width: 100%;
+  max-width: 400px;
+  height: 400px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.noData {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: var(--foreground-muted);
+  font-style: italic;
+  border: 2px dashed var(--border-green);
+  border-radius: 8px;
+  background: var(--gradient-green-light);
+}
