@@ -10,6 +10,54 @@ const SPOTIFY_SCOPES = [
   'playlist-modify-private'
 ].join(' ');
 
+const CACHE_DURATION = 10 * 60 * 1000;
+const CACHE_PREFIX = 'spotify_cache_';
+
+function getCacheKey(endpoint: string, params: Record<string, unknown> = {}): string {
+  const paramString = Object.keys(params).length ? `_${JSON.stringify(params)}` : '';
+  return `${CACHE_PREFIX}${endpoint}${paramString}`;
+}
+
+function getCachedData(cacheKey: string): unknown | null {
+  if (typeof window === 'undefined') return null;
+
+  const cached = localStorage.getItem(cacheKey);
+  if (!cached) return null;
+  
+  const { data, timestamp } = JSON.parse(cached);
+  
+  if (Date.now() - timestamp > CACHE_DURATION) {
+    localStorage.removeItem(cacheKey);
+    return null;
+  }
+  
+  return data;
+}
+
+function setCachedData(cacheKey: string, data: unknown): void {
+  if (typeof window === 'undefined') return;
+  
+  const cacheData = {
+    data,
+    timestamp: Date.now()
+  };
+  localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+}
+
+export function clearSpotifyCache(): void {
+  if (typeof window === 'undefined') return;
+  
+  const keysToRemove: string[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith(CACHE_PREFIX)) {
+      keysToRemove.push(key);
+    }
+  }
+  
+  keysToRemove.forEach(key => localStorage.removeItem(key));
+}
+
 // Token management
 export function isAuthenticated(): boolean {
   if (typeof window === 'undefined') return false;
@@ -33,6 +81,7 @@ export function logout(): void {
   localStorage.removeItem('spotify_token_expires_at');
   localStorage.removeItem('spotify_auth_state');
   localStorage.removeItem('spotify_user_info');
+  clearSpotifyCache();
 }
 
 // Auth flow
@@ -104,8 +153,16 @@ export async function handleSpotifyCallback(): Promise<boolean> {
   }
 }
 
-// Simplified API call helper
-export async function spotifyApiCall(endpoint: string) {
+export async function spotifyApiCall(endpoint: string, useCache: boolean = true) {
+  const cacheKey = getCacheKey(endpoint);
+  
+  if (useCache) {
+    const cachedData = getCachedData(cacheKey);
+    if (cachedData) {
+      return cachedData;
+    }
+  }
+
   const token = getAccessToken();
   if (!token) throw new Error('No access token available');
 
@@ -117,27 +174,37 @@ export async function spotifyApiCall(endpoint: string) {
     throw new Error(`Spotify API error: ${response.status}`);
   }
 
-  return response.json();
+  const data = await response.json();
+  
+  if (useCache) {
+    setCachedData(cacheKey, data);
+  }
+
+  return data;
 }
 
-export async function getUserTopItems(type: 'artists' | 'tracks', timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50) {
-  return spotifyApiCall(`/me/top/${type}?time_range=${timeRange}&limit=${limit}`);
+export async function getUserTopItems(type: 'artists' | 'tracks', timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true) {
+  return spotifyApiCall(`/me/top/${type}?time_range=${timeRange}&limit=${limit}`, useCache);
 }
 
-export async function getUserRecentlyPlayed(limit = 20) {
-  return spotifyApiCall(`/me/player/recently-played?limit=${limit}`);
+export async function getTopArtists(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true) {
+  return spotifyApiCall(`/me/top/artists?time_range=${timeRange}&limit=${limit}`, useCache);
 }
 
-export async function getUserSavedTracks(limit = 20, offset = 0) {
-  return spotifyApiCall(`/me/tracks?limit=${limit}&offset=${offset}`);
+export async function getUserRecentlyPlayed(limit = 20, useCache: boolean = true) {
+  return spotifyApiCall(`/me/player/recently-played?limit=${limit}`, useCache);
 }
 
-export async function getUserSavedAlbums(limit = 20, offset = 0) {
-  return spotifyApiCall(`/me/albums?limit=${limit}&offset=${offset}`);
+export async function getUserSavedTracks(limit = 20, offset = 0, useCache: boolean = true) {
+  return spotifyApiCall(`/me/tracks?limit=${limit}&offset=${offset}`, useCache);
 }
 
-export async function getUserPlaylists(limit = 20, offset = 0) {
-  return spotifyApiCall(`/me/playlists?limit=${limit}&offset=${offset}`);
+export async function getUserSavedAlbums(limit = 20, offset = 0, useCache: boolean = true) {
+  return spotifyApiCall(`/me/albums?limit=${limit}&offset=${offset}`, useCache);
+}
+
+export async function getUserPlaylists(limit = 20, offset = 0, useCache: boolean = true) {
+  return spotifyApiCall(`/me/playlists?limit=${limit}&offset=${offset}`, useCache);
 }
 
 interface Artist {
@@ -147,8 +214,8 @@ interface Artist {
   genres?: string[];
 }
 
-export async function getUserTopGenres(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term') {
-  const topArtists = await getUserTopItems('artists', timeRange, 50);
+export async function getUserTopGenres(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 10, useCache: boolean = true) {
+  const topArtists = await getUserTopItems('artists', timeRange, 50, useCache);
   const genreMap: Record<string, number> = {};
 
   // Count genres from top artists
@@ -159,12 +226,51 @@ export async function getUserTopGenres(timeRange: 'short_term' | 'medium_term' |
     }
   }
 
-  return Object.entries(genreMap)
+  const genres = Object.entries(genreMap)
       .sort(([, a], [, b]) => b - a)
-      .slice(0, 10)
+      .slice(0, limit)
       .map(([name]) => name);
+
+  return genres;
 }
 
-export async function getTopArtists(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50) {
-  return spotifyApiCall(`/me/top/artists?time_range=${timeRange}&limit=${limit}`);
+interface Track {
+  id: string;
+  name: string;
+  artists: { name: string }[];
+  album: {
+    images: { url: string }[];
+  };
+  playcount?: number;
+  popularity?: number;
+  danceability?: number;
+  energy?: number;
+  acousticness?: number;
+}
+
+export async function getUserAverageMoods(timeRange: 'short_term' | 'medium_term' | 'long_term', useCache: boolean = true) {
+  const topTracks = await getUserTopItems('tracks', timeRange, 50, useCache);
+
+  const moodMap: Record<string, number[]> = {
+    happiness: [],
+    danceability: [],
+    energy: [],
+    acousticness: [],
+  };
+
+  for (const track of topTracks.items as Track[]) {
+    moodMap.happiness.push(track.popularity || 0);
+    moodMap.danceability.push(track.danceability || 0);
+    moodMap.energy.push(track.energy || 0);
+    moodMap.acousticness.push(track.acousticness || 0);
+  }
+
+  const averageMoods = Object.fromEntries(
+    Object.entries(moodMap).map(([mood, values]) => [
+      mood,
+      values.length ? values.reduce((a, b) => a + b) / values.length : 0,
+    ])
+  );
+
+  return averageMoods;
 }

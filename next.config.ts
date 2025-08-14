@@ -2,8 +2,16 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ['i.scdn.co'], // Spotify CDN domain
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'i.scdn.co',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
+  allowedDevOrigins: ['127.0.0.1', 'localhost'],
 };
 
 export default nextConfig;

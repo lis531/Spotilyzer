@@ -71,6 +71,7 @@
   display: inline-flex;
   align-items: center;
   box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .active { color: var(--spotilyzer-green); }

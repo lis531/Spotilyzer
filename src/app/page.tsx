@@ -3,19 +3,61 @@ import styles from "./home.module.css";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import DecadesPieChart from "@/components/DecadesPieChart";
+import { useEffect, useState } from "react";
+import React from "react";
+import { getUserTopItems, getUserTopGenres } from "@/utils/spotify";
+
+interface Track {
+    id: string;
+    name: string;
+    artists: { name: string }[];
+    album: {
+        images: { url: string }[];
+        release_date: string;
+        total_tracks: number;
+    };
+    playcount?: number;
+    popularity?: number;
+    danceability?: number;
+}
+
+interface Artist {
+  id: string;
+  name: string;
+  images: { url: string }[];
+  followers: { total: number };
+}
 
 export default function Home() {
   const { userInfo } = useAuth();
 
-  // Sample data for the decades pie chart
-  const decadesData = [
-    { decade: "2020s", count: 145, topGenre: "Pop" },
-    { decade: "2010s", count: 298, topGenre: "Hip-Hop" },
-    { decade: "2000s", count: 187, topGenre: "Rock" },
-    { decade: "1990s", count: 132, topGenre: "R&B" },
-    { decade: "1980s", count: 89, topGenre: "Synth-pop" },
-    { decade: "1970s", count: 45, topGenre: "Classic Rock" },
-  ];
+  const [topGenres, setTopGenres] = useState<string[]>([]);
+  const [topTracks, setTopTracks] = useState<Track[]>([]);
+  const [topArtists, setTopArtists] = useState<Artist[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setTopGenres(await getUserTopGenres('short_term'));
+      const tracksResponse = await getUserTopItems('tracks', 'short_term');
+      setTopTracks(tracksResponse.items || []);
+      const artistsResponse = await getUserTopItems('artists', 'short_term');
+      setTopArtists(artistsResponse.items || []);
+    };
+
+    fetchData();
+  }, []);
+
+  const decadesData = topTracks.reduce((acc, track) => {
+    if (track?.album?.release_date) {
+      const releaseYear = track.album.release_date.split("-")[0];
+      const decade = `${Math.floor(Number(releaseYear) / 10) * 10}s`;
+      acc[decade] = {
+        count: (acc[decade]?.count || 0) + 1,
+        topGenre: "Mixed" // Maybe add later
+      };
+    }
+    return acc;
+  }, {} as Record<string, { count: number; topGenre: string }>);
 
   return (
     <motion.main
@@ -52,54 +94,48 @@ export default function Home() {
             <div className={`card ${styles.summaryCard}`}>
               <h2>Top Tracks (This Month)</h2>
               <ol>
-                <li>1. Track</li>
-                <li className={styles.line}></li>
-                <li>2. Track</li>
-                <li className={styles.line}></li>
-                <li>3. Track</li>
-                <li className={styles.line}></li>
-                <li>4. Track</li>
-                <li className={styles.line}></li>
-                <li>5. Track</li>
+                {topTracks.map((track, index) => {
+                  if (index >= 5) return null;
+                  return (
+                    <React.Fragment key={track.id}>
+                      <li>{`${index + 1}. ${track.name} - ${track.artists.map(artist => artist.name).join(", ")}`}</li>
+                      {index != 4 && <li className={styles.line}></li>}
+                    </React.Fragment>
+                  );
+                })}
               </ol>
             </div>
             <div className={`card ${styles.summaryCard}`}>
               <h2>Top Artists (This Month)</h2>
               <ol>
-                <li>1. Artist 1</li>
-                <li className={styles.line}></li>
-                <li>2. Artist 2</li>
-                <li className={styles.line}></li>
-                <li>3. Artist 3</li>
-                <li className={styles.line}></li>
-                <li>4. Artist 4</li>
-                <li className={styles.line}></li>
-                <li>5. Artist 5</li>
+                {topArtists.map((artist, index) => {
+                  if (index >= 5) return null;
+                  return (
+                    <React.Fragment key={artist.id}>
+                      <li>{`${index + 1}. ${artist.name}`}</li>
+                      {index != 4 && <li className={styles.line}></li>}
+                    </React.Fragment>
+                  );
+                })}
               </ol>
             </div>
             <div className={`card ${styles.summaryCard}`}>
               <h2>Top Genres (This Month)</h2>
               <ol>
-                <li>1. Genre 1</li>
-                <li className={styles.line}></li>
-                <li>2. Genre 2</li>
-                <li className={styles.line}></li>
-                <li>3. Genre 3</li>
-                <li className={styles.line}></li>
-                <li>4. Genre 4</li>
-                <li className={styles.line}></li>
-                <li>5. Genre 5</li>
+                {topGenres.map((genre, index) => {
+                  if (index >= 5) return null;
+                  return (
+                    <React.Fragment key={genre}>
+                      <li>{`${index + 1}. ${genre}`}</li>
+                      {index != 4 && <li className={styles.line}></li>}
+                    </React.Fragment>
+                  );
+                })}
               </ol>
             </div>
           </div>
         </div>
 
-        {/* energy
-            tempo
-            valence
-            danceability
-            instrumentalness
-            speechiness*/}
         <div className={styles.moodsContainer}>
           <h1 className={styles.h1}>
             Your Moods
@@ -144,33 +180,22 @@ export default function Home() {
             </div>
           </div>
         </div>
+
         <div className={styles.decadesContainer}>
           <h1 className={styles.h2}>By Decades</h1>
           <div className={styles.headerLine}></div>
           <div className={styles.pieChartContainer}>
-            <DecadesPieChart data={decadesData} />
+            <DecadesPieChart data={Object.entries(decadesData).map(([decade, { count, topGenre }]) => ({ decade, count, topGenre }))}
+            />
           </div>
           <div className={styles.decadesGrid}>
-            <div className={`card ${styles.decadesCard}`}>
-              <h3 className={styles.h3}>2020s</h3>
-              <p className={styles.text}>Top genre: Pop</p>
-            </div>
-            <div className={`card ${styles.decadesCard}`}>
-              <h3 className={styles.h3}>2010s</h3>
-              <p className={styles.text}>Top genre: Hip-Hop</p>
-            </div>
-            <div className={`card ${styles.decadesCard}`}>
-              <h3 className={styles.h3}>2000s</h3>
-              <p className={styles.text}>Top genre: Rock</p>
-            </div>
-            <div className={`card ${styles.decadesCard}`}>
-              <h3 className={styles.h3}>1990s</h3>
-              <p className={styles.text}>Top genre: R&B</p>
-            </div>
-            <div className={`card ${styles.decadesCard}`}>
-              <h3 className={styles.h3}>1980s</h3>
-              <p className={styles.text}>Top genre: Synth-pop</p>
-            </div>
+            {Object.entries(decadesData).map(([decade, data]) => (
+              <div key={decade} className={`card ${styles.decadeCard}`}>
+                <h3 className={styles.h3}>{decade}</h3>
+                <p className={styles.text}>Tracks: {data.count}</p>
+                <p className={styles.text}>Top Genre: {data.topGenre}</p>
+              </div>
+            ))}
           </div>
         </div>
         <p className={styles.disclaimer}>

@@ -8,6 +8,7 @@ import {
   Legend,
 } from 'chart.js';
 import styles from './DecadesPieChart.module.css';
+import { Geist } from "next/font/google";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -20,6 +21,11 @@ interface DecadeData {
 interface DecadesPieChartProps {
   data: DecadeData[];
 }
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
 
 const DecadesPieChart: React.FC<DecadesPieChartProps> = ({ data }) => {
   if (!data || data.length === 0) {
@@ -59,7 +65,8 @@ const DecadesPieChart: React.FC<DecadesPieChartProps> = ({ data }) => {
         labels: {
           color: '#ffffff',
           font: {
-            size: 12,
+              size: 12,
+              family: geistSans.style.fontFamily,
           },
           padding: 20,
         },
@@ -70,8 +77,16 @@ const DecadesPieChart: React.FC<DecadesPieChartProps> = ({ data }) => {
         bodyColor: '#ffffff',
         borderColor: '#1db954',
         borderWidth: 1,
+        titleFont: {
+          size: 14,
+          family: geistSans.style.fontFamily,
+        },
+        bodyFont: {
+          size: 12,
+          family: geistSans.style.fontFamily,
+        },
         callbacks: {
-          label: function(context: any) {
+          label: function(context: { label: string; parsed: number }) {
             const decade = context.label;
             const count = context.parsed;
             const decadeInfo = data.find(d => d.decade === decade);
