@@ -15,8 +15,6 @@ interface Track {
         images: { url: string }[];
     };
     playcount?: number;
-    popularity?: number;
-    danceability?: number;
 }
 
 export default function Tracks() {

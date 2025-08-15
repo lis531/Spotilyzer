@@ -5,20 +5,21 @@ import { useAuth } from "@/hooks/useAuth";
 import DecadesPieChart from "@/components/DecadesPieChart";
 import { useEffect, useState } from "react";
 import React from "react";
-import { getUserTopItems, getUserTopGenres } from "@/utils/spotify";
+import { getUserTopItems, getUserTopGenres, getUserTopItemsWithFeatures } from "@/utils/spotify";
 
 interface Track {
-    id: string;
-    name: string;
-    artists: { name: string }[];
-    album: {
-        images: { url: string }[];
-        release_date: string;
-        total_tracks: number;
-    };
-    playcount?: number;
-    popularity?: number;
-    danceability?: number;
+  id: string;
+  name: string;
+  artists: { name: string }[];
+  album: {
+    release_date: string;
+    images: { url: string }[];
+  };
+  playcount?: number;
+  popularity?: number;
+  danceability?: number;
+  energy?: number;
+  acousticness?: number;
 }
 
 interface Artist {
@@ -32,14 +33,14 @@ export default function Home() {
   const { userInfo } = useAuth();
 
   const [topGenres, setTopGenres] = useState<string[]>([]);
-  const [topTracks, setTopTracks] = useState<Track[]>([]);
+  const [topTracksWithFeatures, setTopTracksWithFeatures] = useState<Track[]>([]);
   const [topArtists, setTopArtists] = useState<Artist[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setTopGenres(await getUserTopGenres('short_term'));
-      const tracksResponse = await getUserTopItems('tracks', 'short_term');
-      setTopTracks(tracksResponse.items || []);
+      const tracksResponse = await getUserTopItemsWithFeatures('tracks', 'short_term');
+      setTopTracksWithFeatures(tracksResponse.items || []);
       const artistsResponse = await getUserTopItems('artists', 'short_term');
       setTopArtists(artistsResponse.items || []);
     };
@@ -47,7 +48,7 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const decadesData = topTracks.reduce((acc, track) => {
+  const decadesData = topTracksWithFeatures.reduce((acc, track) => {
     if (track?.album?.release_date) {
       const releaseYear = track.album.release_date.split("-")[0];
       const decade = `${Math.floor(Number(releaseYear) / 10) * 10}s`;
@@ -58,6 +59,13 @@ export default function Home() {
     }
     return acc;
   }, {} as Record<string, { count: number; topGenre: string }>);
+
+  const avgMoodData = {
+    happiness: topTracksWithFeatures.filter(track => track?.popularity && track.popularity > 50).length,
+    danceability: topTracksWithFeatures.filter(track => track?.danceability && track.danceability > 50).length,
+    energy: topTracksWithFeatures.filter(track => track?.energy && track.energy > 50).length,
+    acousticness: topTracksWithFeatures.filter(track => track?.acousticness && track.acousticness > 50).length,
+  };
 
   return (
     <motion.main
@@ -94,7 +102,7 @@ export default function Home() {
             <div className={`card ${styles.summaryCard}`}>
               <h2>Top Tracks (This Month)</h2>
               <ol>
-                {topTracks.map((track, index) => {
+                {topTracksWithFeatures.map((track, index) => {
                   if (index >= 5) return null;
                   return (
                     <React.Fragment key={track.id}>
@@ -144,7 +152,7 @@ export default function Home() {
           <div className={styles.moodGrid}>
             <div className={`card ${styles.moodCard}`}>
               <h2 className={styles.h2}>Happiness</h2>
-              <progress value={70} max={100} />
+              <progress value={avgMoodData.happiness} max={100} />
               <p className={styles.description}>Mostly upbeat, positive songs.</p>
               <div className={styles.songSection}>
                 <b>Happiest:</b>
@@ -153,7 +161,7 @@ export default function Home() {
             </div>
             <div className={`card ${styles.moodCard}`}>
               <h2 className={styles.h2}>Danceability</h2>
-              <progress value={80} max={100} />
+              <progress value={avgMoodData.danceability} max={100} />
               <p className={styles.description}>Great for dancing and moving.</p>
               <div className={styles.songSection}>
                 <b>Most danceable:</b>
@@ -162,7 +170,7 @@ export default function Home() {
             </div>
             <div className={`card ${styles.moodCard}`}>
               <h2 className={styles.h2}>Energy</h2>
-              <progress value={90} max={100} />
+              <progress value={avgMoodData.energy} max={100} />
               <p className={styles.description}>High energy tracks to keep you moving.</p>
               <div className={styles.songSection}>
                 <b>Most energetic:</b>
@@ -171,7 +179,7 @@ export default function Home() {
             </div>
             <div className={`card ${styles.moodCard}`}>
               <h2 className={styles.h2}>Acousticness</h2>
-              <progress value={60} max={100} />
+              <progress value={avgMoodData.acousticness} max={100} />
               <p className={styles.description}>Soft and calming acoustic tracks.</p>
               <div className={styles.songSection}>
                 <b>Most acoustic:</b>
@@ -185,7 +193,7 @@ export default function Home() {
           <h1 className={styles.h2}>By Decades</h1>
           <div className={styles.headerLine}></div>
           <div className={styles.pieChartContainer}>
-            <DecadesPieChart data={Object.entries(decadesData).map(([decade, { count, topGenre }]) => ({ decade, count, topGenre }))}
+            <DecadesPieChart data={Object.entries(decadesData).map(([decade, { count }]) => ({ decade, count }))}
             />
           </div>
           <div className={styles.decadesGrid}>
@@ -193,7 +201,7 @@ export default function Home() {
               <div key={decade} className={`card ${styles.decadeCard}`}>
                 <h3 className={styles.h3}>{decade}</h3>
                 <p className={styles.text}>Tracks: {data.count}</p>
-                <p className={styles.text}>Top Genre: {data.topGenre}</p>
+                {/* <p className={styles.text}>Top Genre: {data.topGenre}</p> */}
               </div>
             ))}
           </div>

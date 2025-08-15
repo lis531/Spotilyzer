@@ -248,29 +248,21 @@ interface Track {
   acousticness?: number;
 }
 
-export async function getUserAverageMoods(timeRange: 'short_term' | 'medium_term' | 'long_term', useCache: boolean = true) {
-  const topTracks = await getUserTopItems('tracks', timeRange, 50, useCache);
-
-  const moodMap: Record<string, number[]> = {
-    happiness: [],
-    danceability: [],
-    energy: [],
-    acousticness: [],
+export async function getAudioFeatures(trackId: string): Promise<{
+  danceability: number;
+  energy: number;
+  acousticness: number;
+}> {
+  const data = await spotifyApiCall(`/audio-features/${trackId}`);
+  return {
+    danceability: data.danceability,
+    energy: data.energy,
+    acousticness: data.acousticness,
   };
+}
 
-  for (const track of topTracks.items as Track[]) {
-    moodMap.happiness.push(track.popularity || 0);
-    moodMap.danceability.push(track.danceability || 0);
-    moodMap.energy.push(track.energy || 0);
-    moodMap.acousticness.push(track.acousticness || 0);
-  }
-
-  const averageMoods = Object.fromEntries(
-    Object.entries(moodMap).map(([mood, values]) => [
-      mood,
-      values.length ? values.reduce((a, b) => a + b) / values.length : 0,
-    ])
-  );
-
-  return averageMoods;
+export async function getUserTopItemsWithFeatures(type: 'tracks' | 'artists', timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true) {
+  const topItems = await getUserTopItems(type, timeRange, limit, useCache);
+  const features = await Promise.all(topItems.items.map((item: Track) => getAudioFeatures(item.id)));
+  return { items: topItems.items, features };
 }

@@ -15,7 +15,6 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 interface DecadeData {
   decade: string;
   count: number;
-  topGenre: string;
 }
 
 interface DecadesPieChartProps {
@@ -89,13 +88,9 @@ const DecadesPieChart: React.FC<DecadesPieChartProps> = ({ data }) => {
           label: function(context: { label: string; parsed: number }) {
             const decade = context.label;
             const count = context.parsed;
-            const decadeInfo = data.find(d => d.decade === decade);
             const total = data.reduce((sum, item) => sum + item.count, 0);
             const percentage = ((count / total) * 100).toFixed(1);
-            return [
-              `${decade}: ${count} tracks (${percentage}%)`,
-              `Top genre: ${decadeInfo?.topGenre || 'Unknown'}`
-            ];
+            return `${decade}: ${count} tracks (${percentage}%)`;
           },
         },
       },
