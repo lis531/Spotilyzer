@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import DecadesPieChart from "@/components/DecadesPieChart";
 import { useEffect, useState } from "react";
 import React from "react";
-import { getUserTopItems, getUserTopGenres, getUserTopItemsWithFeatures } from "@/utils/spotify";
+import { getUserTopItems, getUserTopGenres, getTracksWithFeatures } from "@/utils/spotify";
 
 interface Track {
   id: string;
@@ -33,22 +33,24 @@ export default function Home() {
   const { userInfo } = useAuth();
 
   const [topGenres, setTopGenres] = useState<string[]>([]);
+  const [topTracks, setTopTracks] = useState<Track[]>([]);
   const [topTracksWithFeatures, setTopTracksWithFeatures] = useState<Track[]>([]);
   const [topArtists, setTopArtists] = useState<Artist[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setTopGenres(await getUserTopGenres('short_term'));
-      const tracksResponse = await getUserTopItemsWithFeatures('tracks', 'short_term');
-      setTopTracksWithFeatures(tracksResponse.items || []);
+      const tracksResponse = await getUserTopItems('tracks', 'short_term');
+      setTopTracks(tracksResponse.items || []);
       const artistsResponse = await getUserTopItems('artists', 'short_term');
       setTopArtists(artistsResponse.items || []);
+      // const tracksWithFeaturesResponse = await getTracksWithFeatures('short_term');
+      // setTopTracksWithFeatures(tracksWithFeaturesResponse.items || []);
     };
-
     fetchData();
   }, []);
 
-  const decadesData = topTracksWithFeatures.reduce((acc, track) => {
+  const decadesData = topTracks.reduce((acc, track) => {
     if (track?.album?.release_date) {
       const releaseYear = track.album.release_date.split("-")[0];
       const decade = `${Math.floor(Number(releaseYear) / 10) * 10}s`;
@@ -60,11 +62,23 @@ export default function Home() {
     return acc;
   }, {} as Record<string, { count: number; topGenre: string }>);
 
-  const avgMoodData = {
-    happiness: topTracksWithFeatures.filter(track => track?.popularity && track.popularity > 50).length,
-    danceability: topTracksWithFeatures.filter(track => track?.danceability && track.danceability > 50).length,
-    energy: topTracksWithFeatures.filter(track => track?.energy && track.energy > 50).length,
-    acousticness: topTracksWithFeatures.filter(track => track?.acousticness && track.acousticness > 50).length,
+  const moodData = {
+    happiestTrack: topTracks.reduce((prev, curr) => {
+      return (curr?.popularity || 0) > (prev?.popularity || 0) ? curr : prev;
+    }, {} as Track),
+    avgHappiness: topTracks.filter(track => track?.popularity && track.popularity > 50).length,
+    danceablestTrack: topTracksWithFeatures.reduce((prev, curr) => {
+      return (curr?.danceability || 0) > (prev?.danceability || 0) ? curr : prev;
+    }, {} as Track),
+    avgDanceability: topTracksWithFeatures.filter(track => track?.danceability && track.danceability > 50).length,
+    mostEnergeticTrack: topTracksWithFeatures.reduce((prev, curr) => {
+      return (curr?.energy || 0) > (prev?.energy || 0) ? curr : prev;
+    }, {} as Track),
+    avgEnergy: topTracksWithFeatures.filter(track => track?.energy && track.energy > 50).length,
+    mostAcousticTrack: topTracksWithFeatures.reduce((prev, curr) => {
+      return (curr?.acousticness || 0) > (prev?.acousticness || 0) ? curr : prev;
+    }, {} as Track),
+    avgAcousticness: topTracksWithFeatures.filter(track => track?.acousticness && track.acousticness > 50).length
   };
 
   return (
@@ -102,7 +116,7 @@ export default function Home() {
             <div className={`card ${styles.summaryCard}`}>
               <h2>Top Tracks (This Month)</h2>
               <ol>
-                {topTracksWithFeatures.map((track, index) => {
+                {topTracks.map((track, index) => {
                   if (index >= 5) return null;
                   return (
                     <React.Fragment key={track.id}>
@@ -152,38 +166,38 @@ export default function Home() {
           <div className={styles.moodGrid}>
             <div className={`card ${styles.moodCard}`}>
               <h2 className={styles.h2}>Happiness</h2>
-              <progress value={avgMoodData.happiness} max={100} />
+              <progress value={moodData.avgHappiness} max={100} />
               <p className={styles.description}>Mostly upbeat, positive songs.</p>
               <div className={styles.songSection}>
                 <b>Happiest:</b>
-                <p>Happy Song Title</p>
+                <p>{moodData.happiestTrack?.name}</p>
               </div>
             </div>
             <div className={`card ${styles.moodCard}`}>
               <h2 className={styles.h2}>Danceability</h2>
-              <progress value={avgMoodData.danceability} max={100} />
+              <progress value={moodData.avgDanceability} max={100} />
               <p className={styles.description}>Great for dancing and moving.</p>
               <div className={styles.songSection}>
                 <b>Most danceable:</b>
-                <p>Danceable Song Title</p>
+                <p>{moodData.danceablestTrack?.name}</p>
               </div>
             </div>
             <div className={`card ${styles.moodCard}`}>
               <h2 className={styles.h2}>Energy</h2>
-              <progress value={avgMoodData.energy} max={100} />
+              <progress value={moodData.avgEnergy} max={100} />
               <p className={styles.description}>High energy tracks to keep you moving.</p>
               <div className={styles.songSection}>
                 <b>Most energetic:</b>
-                <p>Energetic Song Title</p>
+                <p>{moodData.mostEnergeticTrack?.name}</p>
               </div>
             </div>
             <div className={`card ${styles.moodCard}`}>
               <h2 className={styles.h2}>Acousticness</h2>
-              <progress value={avgMoodData.acousticness} max={100} />
+              <progress value={moodData.avgAcousticness} max={100} />
               <p className={styles.description}>Soft and calming acoustic tracks.</p>
               <div className={styles.songSection}>
                 <b>Most acoustic:</b>
-                <p>Acoustic Song Title</p>
+                <p>{moodData.mostAcousticTrack?.name}</p>
               </div>
             </div>
           </div>

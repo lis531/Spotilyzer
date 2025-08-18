@@ -164,15 +164,10 @@ export async function spotifyApiCall(endpoint: string, useCache: boolean = true)
   }
 
   const token = getAccessToken();
-  if (!token) throw new Error('No access token available');
 
   const response = await fetch(`https://api.spotify.com/v1${endpoint}`, {
     headers: { 'Authorization': `Bearer ${token}` }
   });
-
-  if (!response.ok) {
-    throw new Error(`Spotify API error: ${response.status}`);
-  }
 
   const data = await response.json();
   
@@ -248,21 +243,28 @@ interface Track {
   acousticness?: number;
 }
 
-export async function getAudioFeatures(trackId: string): Promise<{
-  danceability: number;
-  energy: number;
-  acousticness: number;
-}> {
-  const data = await spotifyApiCall(`/audio-features/${trackId}`);
-  return {
-    danceability: data.danceability,
-    energy: data.energy,
-    acousticness: data.acousticness,
-  };
+export async function getAudioFeatures(trackIds: string[], useCache: boolean = true): Promise<any> {
+  // use different api because spotify is deprecated
 }
 
-export async function getUserTopItemsWithFeatures(type: 'tracks' | 'artists', timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true) {
-  const topItems = await getUserTopItems(type, timeRange, limit, useCache);
-  const features = await Promise.all(topItems.items.map((item: Track) => getAudioFeatures(item.id)));
-  return { items: topItems.items, features };
+export async function getTracksWithFeatures(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true) {
+  const topItems = await getUserTopItems('tracks', timeRange, limit, useCache);
+  
+  const tracks = topItems.items || [];
+
+  const trackIds = tracks.map((track: Track) => track.id);
+  
+  const audioFeaturesResponse = await getAudioFeatures(trackIds, useCache);
+  console.log('Audio features response:', audioFeaturesResponse);
+  
+  const audioFeatures = audioFeaturesResponse.audio_features || [];
+  console.log('Audio features extracted:', audioFeatures.length, 'features');
+  
+  const tracksWithFeatures = tracks.map((track: Track, index: number) => ({
+    ...track,
+    ...audioFeatures[index]
+  }));
+  console.log('Tracks with features combined:', tracksWithFeatures);
+
+  return { items: tracksWithFeatures };
 }
