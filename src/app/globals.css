@@ -8,8 +8,8 @@
   --gray-darker: #0a0a0a;
   
   /* Spotilyzer brand colors */
-  --spotilyzer-green: #1db954;
-  --spotilyzer-light-green: #4de681;
+  --spotilyzer-green: #13dd5a;
+  --spotilyzer-light-green: #47c571;
   
   /* Semantic colors */
   --background: var(--white);
@@ -55,6 +55,16 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
   height: 100%;
+  scrollbar-gutter: stable;
+  &::-webkit-scrollbar {
+	  width: 6px;
+	  background: transparent;
+	  border-radius: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+	  background: var(--gray-light);
+    border-radius: 8px;
+  }
 }
 
 body {
@@ -99,7 +109,8 @@ a {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-family: var(--font-geist-sans);
+  font-family: var(--font-geist-sans), serif;
+  position: relative;
 }
 
 .main {
@@ -108,7 +119,7 @@ a {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 8rem 0;
+  padding: 8rem 0 2rem 0;
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
@@ -120,6 +131,7 @@ a {
   font-weight: bold;
   text-align: center;
   margin-bottom: 1rem;
+  padding: 0.4rem;
   background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -139,6 +151,7 @@ h1 {
   font-weight: 600;
   margin: 2rem 0 1rem;
   text-align: center;
+  color: var(--foreground);
 }
 
 h2 {

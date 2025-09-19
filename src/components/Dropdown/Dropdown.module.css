@@ -1,0 +1,97 @@
+/* Dropdown container */
+.dropdown {
+	position: absolute;
+    right: 1rem;
+    top: 1rem;
+	display: inline-block;
+	min-width: 220px;
+	font-family: inherit;
+}
+
+/* Select button */
+.select {
+	width: 100%;
+	padding: 0.75rem 1.2rem 0.75rem 1rem;
+	background: var(--overlay-base);
+	border: 2px solid var(--border-green);
+	border-radius: 8px;
+	color: var(--foreground);
+	font-size: 1rem;
+	font-weight: 500;
+	text-align: left;
+	cursor: pointer;
+	box-shadow: var(--shadow-default);
+	transition: border 0.2s, box-shadow 0.2s;
+	outline: none;
+	position: relative;
+}
+
+.select:hover, .select:focus {
+	border-color: var(--spotilyzer-green);
+	box-shadow: var(--shadow-green);
+}
+
+/* Arrow icon */
+.arrow {
+	position: absolute;
+	right: 1.2rem;
+	top: 50%;
+	transform: translateY(-50%) rotate(45deg);
+	width: 0.6em;
+	height: 0.6em;
+	border: solid var(--foreground-muted);
+	border-width: 0 2px 2px 0;
+	padding: 3px;
+	pointer-events: none;
+	transition: border-color 0.2s;
+}
+
+/* Dropdown menu */
+.menu {
+	position: absolute;
+	left: 0;
+	right: 0;
+	margin-top: 0.5rem;
+	background: var(--background);
+	border: 2px solid var(--border-green);
+	border-radius: 8px;
+	box-shadow: var(--shadow-default);
+	z-index: 10;
+	max-height: 12.5rem;
+	overflow-y: auto;
+	min-width: 220px;
+}
+
+.menu::-webkit-scrollbar {
+	width: 4px;
+	background: transparent;
+	border-radius: 8px;
+}
+.menu::-webkit-scrollbar-thumb {
+	background: var(--gray-light);
+    border-radius: 8px;
+}
+
+/* Dropdown option */
+.option {
+	padding: 0.7rem 1.2rem;
+	cursor: pointer;
+	color: var(--foreground);
+	background: transparent;
+	font-size: 1rem;
+	border: none;
+	outline: none;
+	transition: background 0.15s, color 0.15s;
+}
+
+.option:hover, .option:focus {
+	background: var(--overlay-green-light);
+	color: var(--spotilyzer-green);
+}
+
+/* Selected option */
+.selected {
+	background: var(--overlay-green-medium);
+	color: var(--spotilyzer-green);
+	font-weight: 600;
+}

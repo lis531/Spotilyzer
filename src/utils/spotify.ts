@@ -142,7 +142,6 @@ export async function handleSpotifyCallback(): Promise<boolean> {
       localStorage.setItem('spotify_token_expires_at', expiresAt.toString());
     }
 
-    // Clean up
     window.history.replaceState({}, document.title, window.location.pathname);
     localStorage.removeItem('spotify_auth_state');
 
@@ -178,8 +177,69 @@ export async function spotifyApiCall(endpoint: string, useCache: boolean = true)
   return data;
 }
 
+interface Track {
+  id: string;
+  name: string;
+  artists: { name: string }[];
+  album: {
+    images: { url: string }[];
+  };
+  playcount?: number;
+  popularity?: number;
+  danceability?: number;
+  energy?: number;
+  acousticness?: number;
+}
+
+interface Artist {
+  name: string;
+  images: { url: string }[];
+  followers: { total: number };
+  genres?: string[];
+}
+
+interface Playlist {
+  id: string;
+  name: string;
+  tracks: {
+    items: Track[];
+    next: string | null;
+  };
+}
+
+
 export async function getUserTopItems(type: 'artists' | 'tracks', timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true) {
   return spotifyApiCall(`/me/top/${type}?time_range=${timeRange}&limit=${limit}`, useCache);
+}
+
+export async function getUserPlaylistItems(playlistId: string, limit = 50, offset = 0, useCache: boolean = true) {
+  return spotifyApiCall(`/playlists/${playlistId}/tracks?limit=${limit}&offset=${offset}`, useCache);
+}
+
+export async function getUserAllPlaylistItems(playlistId: string, limit = 50, offset = 0, useCache: boolean = true) {
+  const allItems: Playlist[] = [];
+  let hasMore = true;
+
+  while (hasMore) {
+    const response = await getUserPlaylistItems(playlistId, limit, offset, useCache);
+    allItems.push(...response.items);
+    hasMore = response.next !== null;
+    offset += limit;
+  }
+
+  return allItems;
+}
+
+export async function getAllUserPlaylists(limit = 50, offset = 0, useCache: boolean = true) {
+  const allPlaylists: Playlist[] = [];
+  let hasMore = true;
+  while (hasMore) {
+    const response = await getUserPlaylists(limit, offset, useCache);
+    allPlaylists.push(...response.items);
+    hasMore = response.next !== null;
+    offset += limit;
+  }
+  return allPlaylists;
 }
 
 export async function getTopArtists(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true) {
@@ -202,12 +262,7 @@ export async function getUserPlaylists(limit = 20, offset = 0, useCache: boolean
   return spotifyApiCall(`/me/playlists?limit=${limit}&offset=${offset}`, useCache);
 }
 
-interface Artist {
-  name: string;
-  images: { url: string }[];
-  followers: { total: number };
-  genres?: string[];
-}
+
 
 export async function getUserTopGenres(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 10, useCache: boolean = true) {
   const topArtists = await getUserTopItems('artists', timeRange, 50, useCache);
@@ -221,50 +276,52 @@ export async function getUserTopGenres(timeRange: 'short_term' | 'medium_term' |
     }
   }
 
-  const genres = Object.entries(genreMap)
+  return Object.entries(genreMap)
       .sort(([, a], [, b]) => b - a)
       .slice(0, limit)
       .map(([name]) => name);
-
-  return genres;
 }
 
-interface Track {
-  id: string;
-  name: string;
-  artists: { name: string }[];
-  album: {
-    images: { url: string }[];
-  };
-  playcount?: number;
-  popularity?: number;
-  danceability?: number;
-  energy?: number;
-  acousticness?: number;
+export async function getMbidsForSpotifyTracks(spotifyTrackIds: string[]): Promise<string[]> {
+  const promises = spotifyTrackIds.map(async (spotifyId) => {
+    const response = await fetch(`https://api.spotify.com/v1/tracks/${spotifyId}`, {
+      headers: { 'Authorization': `Bearer ${getAccessToken()}` }
+    });
+    if (!response.ok) {
+      return null;
+    }
+    const data = await response.json();
+    return data.external_ids?.mbid || null;
+  });
+  const mbids = await Promise.all(promises);
+  return mbids.filter((mbid): mbid is string => mbid !== null);
 }
 
-export async function getAudioFeatures(trackIds: string[], useCache: boolean = true): Promise<any> {
-  // use different api because spotify is deprecated
+export async function getAudioFeatures(trackMbids: string[], useCache: boolean = true): Promise<string[]> {
+  const promises = trackMbids.map(async (mbid) => {
+    const url = `https://acousticbrainz.org/api/v1/${mbid}/high-level`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      return null;
+    }
+    return await response.json();
+  });
+  return Promise.all(promises);
 }
+
 
 export async function getTracksWithFeatures(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true) {
   const topItems = await getUserTopItems('tracks', timeRange, limit, useCache);
-  
   const tracks = topItems.items || [];
 
-  const trackIds = tracks.map((track: Track) => track.id);
-  
-  const audioFeaturesResponse = await getAudioFeatures(trackIds, useCache);
-  console.log('Audio features response:', audioFeaturesResponse);
-  
-  const audioFeatures = audioFeaturesResponse.audio_features || [];
-  console.log('Audio features extracted:', audioFeatures.length, 'features');
-  
+  const mbids = await getMbidsForSpotifyTracks(tracks.map((track: Track) => track.id));
+
+  const audioFeaturesList = await getAudioFeatures(mbids, useCache);
+
   const tracksWithFeatures = tracks.map((track: Track, index: number) => ({
     ...track,
-    ...audioFeatures[index]
+    audioFeatures: audioFeaturesList[index] || null
   }));
-  console.log('Tracks with features combined:', tracksWithFeatures);
 
   return { items: tracksWithFeatures };
 }

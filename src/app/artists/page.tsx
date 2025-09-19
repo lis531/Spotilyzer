@@ -4,7 +4,7 @@ import styles from "./artists.module.css";
 import React, { useState, useEffect } from "react";
 import { getTopArtists } from "@/utils/spotify";
 import Image from "next/image";
-import TimeRangeButtons from "../components/TimeRangeButtons/TimeRangeButtons";
+import TimeRangeButtons from "@/components/TimeRangeButtons/TimeRangeButtons";
 
 interface Artist {
   id: string;

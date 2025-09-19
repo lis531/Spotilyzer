@@ -3,7 +3,7 @@ import styles from "./genres.module.css";
 import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import { getUserTopGenres } from "@/utils/spotify";
-import TimeRangeButtons from "../components/TimeRangeButtons/TimeRangeButtons";
+import TimeRangeButtons from "@/components/TimeRangeButtons/TimeRangeButtons";
 
 export default function Genres() {
     const [topGenres, setTopGenres] = useState<string[]>([]);

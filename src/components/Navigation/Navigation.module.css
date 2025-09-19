@@ -1,8 +1,7 @@
 .nav {
   position: fixed;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  align-self: center;
   display: flex;
   gap: 1rem;
   align-items: center;
@@ -16,6 +15,19 @@
   border: 1px solid var(--gray-medium);
   border-top: none;
   overflow: visible;
+}
+
+.nav::before {
+  content: '';
+  position: absolute;
+  top: -75%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 125%;
+  height: 155%;
+  background: radial-gradient(ellipse at center, var(--overlay-green-strong) 0%, var(--overlay-green-light) 50%, transparent 70%);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .linkContainer {
@@ -46,7 +58,6 @@
   will-change: transform;
 }
 .highlightDropdown {
-
   z-index: -1;
 }
 
