@@ -2,10 +2,9 @@
 import React, { useState, useEffect } from "react";
 import styles from "./tracks.module.css";
 import { motion } from "framer-motion";
-import { getUserTopItems } from "@/utils/spotify";
+import { getUserItems } from "@/utils/spotify";
 import Image from "next/image";
 import TimeRangeButtons from "@/components/TimeRangeButtons/TimeRangeButtons";
-import { useSearchParams } from "next/navigation";
 
 interface Track {
     id: string;
@@ -19,18 +18,17 @@ interface Track {
 
 export default function Tracks() {
     const [topTracks, setTopTracks] = useState<{ items: Track[] }>({ items: [] });
-    const searchParams = useSearchParams();
+    const playlistId = process.env.NEXT_PUBLIC_SPOTIFY_PLAYLIST_ID || null;
 
     const fetchTopTracks = async (timeRange: 'short_term' | 'medium_term' | 'long_term') => {
-        const tracks = await getUserTopItems("tracks", timeRange);
+        const tracks = await getUserItems("tracks", timeRange, 50, true, playlistId);
         setTopTracks(tracks);
     };
 
     useEffect(() => {
-        const timeRange = searchParams.get('timeRange') as 'short_term' | 'medium_term' | 'long_term' || 'medium_term';
-        fetchTopTracks(timeRange);
-    }, [searchParams]);
-    
+        fetchTopTracks('medium_term');
+    }, []);
+
     return (
         <motion.main
             className={`main`}
@@ -63,12 +61,12 @@ export default function Tracks() {
                             onClick={() => window.open(`https://open.spotify.com/track/${track.id}`, "_blank")}
                         >
                             <div className={styles.trackInfo}>
-                                <Image 
-                                  className={`image ${styles.trackImage}`} 
-                                  src={track?.album.images[0]?.url || '/placeholder-album.png'} 
-                                  alt={track?.name || 'Track'}
-                                  width={80}
-                                  height={80}
+                                <Image
+                                    className={`image ${styles.trackImage}`}
+                                    src={track?.album.images[0]?.url || '/placeholder-album.png'}
+                                    alt={track?.name || 'Track'}
+                                    width={80}
+                                    height={80}
                                 />
                                 <div className={styles.trackDetails}>
                                     <h3>{track?.name}</h3>

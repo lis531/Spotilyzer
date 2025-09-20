@@ -207,11 +207,6 @@ interface Playlist {
   };
 }
 
-
-export async function getUserTopItems(type: 'artists' | 'tracks', timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true) {
-  return spotifyApiCall(`/me/top/${type}?time_range=${timeRange}&limit=${limit}`, useCache);
-}
-
 export async function getUserPlaylistItems(playlistId: string, limit = 50, offset = 0, useCache: boolean = true) {
   return spotifyApiCall(`/playlists/${playlistId}/tracks?limit=${limit}&offset=${offset}`, useCache);
 }
@@ -242,30 +237,24 @@ export async function getAllUserPlaylists(limit = 50, offset = 0, useCache: bool
   return allPlaylists;
 }
 
-export async function getTopArtists(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true) {
-  return spotifyApiCall(`/me/top/artists?time_range=${timeRange}&limit=${limit}`, useCache);
+export async function getUserItems(type: 'artists' | 'tracks', timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true, fromPlaylistId: string | null = null) {
+  // return either from playlist or top items
+  if (fromPlaylistId) {
+    return getUserAllPlaylistItems(fromPlaylistId, limit, 0, useCache);
+  }
+  return spotifyApiCall(`/me/top/${type}?time_range=${timeRange}&limit=${limit}`, useCache);
 }
 
 export async function getUserRecentlyPlayed(limit = 20, useCache: boolean = true) {
   return spotifyApiCall(`/me/player/recently-played?limit=${limit}`, useCache);
 }
 
-export async function getUserSavedTracks(limit = 20, offset = 0, useCache: boolean = true) {
-  return spotifyApiCall(`/me/tracks?limit=${limit}&offset=${offset}`, useCache);
-}
-
-export async function getUserSavedAlbums(limit = 20, offset = 0, useCache: boolean = true) {
-  return spotifyApiCall(`/me/albums?limit=${limit}&offset=${offset}`, useCache);
-}
-
 export async function getUserPlaylists(limit = 20, offset = 0, useCache: boolean = true) {
   return spotifyApiCall(`/me/playlists?limit=${limit}&offset=${offset}`, useCache);
 }
 
-
-
-export async function getUserTopGenres(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 10, useCache: boolean = true) {
-  const topArtists = await getUserTopItems('artists', timeRange, 50, useCache);
+export async function getUserTopGenres(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 10, useCache: boolean = true, fromPlaylistId: string | null = null) {
+  const topArtists = await getUserItems('artists', timeRange, 50, useCache, fromPlaylistId);
   const genreMap: Record<string, number> = {};
 
   // Count genres from top artists
@@ -309,9 +298,8 @@ export async function getAudioFeatures(trackMbids: string[], useCache: boolean =
   return Promise.all(promises);
 }
 
-
-export async function getTracksWithFeatures(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true) {
-  const topItems = await getUserTopItems('tracks', timeRange, limit, useCache);
+export async function getTracksWithFeatures(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true, fromPlaylistId: string | null = null) {
+  const topItems = await getUserItems('tracks', timeRange, limit, useCache, fromPlaylistId);
   const tracks = topItems.items || [];
 
   const mbids = await getMbidsForSpotifyTracks(tracks.map((track: Track) => track.id));

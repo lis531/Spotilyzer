@@ -23,7 +23,7 @@
   top: -75%;
   left: 50%;
   transform: translateX(-50%);
-  width: 125%;
+  width: 95%;
   height: 155%;
   background: radial-gradient(ellipse at center, var(--overlay-green-strong) 0%, var(--overlay-green-light) 50%, transparent 70%);
   z-index: -1;

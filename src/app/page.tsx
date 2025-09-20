@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import DecadesPieChart from "@/components/DecadesPieChart";
 import { useEffect, useState } from "react";
 import React from "react";
-import { getUserTopItems, getUserTopGenres, getTracksWithFeatures } from "@/utils/spotify";
+import { getUserItems, getUserTopGenres, getTracksWithFeatures } from "@/utils/spotify";
 
 interface Track {
   id: string;
@@ -40,12 +40,15 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       setTopGenres(await getUserTopGenres('short_term'));
-      const tracksResponse = await getUserTopItems('tracks', 'short_term');
+      const tracksResponse = await getUserItems('tracks', 'short_term');
       setTopTracks(tracksResponse.items || []);
-      const artistsResponse = await getUserTopItems('artists', 'short_term');
+      const artistsResponse = await getUserItems('artists', 'short_term');
       setTopArtists(artistsResponse.items || []);
-      // const tracksWithFeaturesResponse = await getTracksWithFeatures('short_term');
-      // setTopTracksWithFeatures(tracksWithFeaturesResponse.items || []);
+      const tracksWithFeaturesResponse = await getTracksWithFeatures('short_term');
+      setTopTracksWithFeatures(tracksWithFeaturesResponse.items || []);
+      console.log(topTracksWithFeatures.reduce((prev, curr) => {
+      return (curr?.danceability || 0) > (prev?.danceability || 0) ? curr : prev;
+    }, {} as Track),);
     };
     fetchData();
   }, []);
