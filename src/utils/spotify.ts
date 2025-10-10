@@ -305,6 +305,7 @@ export async function getTracksWithFeatures(timeRange: 'short_term' | 'medium_te
   const mbids = await getMbidsForSpotifyTracks(tracks.map((track: Track) => track.id));
 
   const audioFeaturesList = await getAudioFeatures(mbids, useCache);
+  console.log(audioFeaturesList, mbids);
 
   const tracksWithFeatures = tracks.map((track: Track, index: number) => ({
     ...track,

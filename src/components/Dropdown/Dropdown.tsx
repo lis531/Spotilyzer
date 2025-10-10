@@ -1,4 +1,3 @@
-
 import styles from './Dropdown.module.css';
 import { getAllUserPlaylists } from '@/utils/spotify';
 import { useEffect, useState, useRef } from 'react';
@@ -12,7 +11,12 @@ interface Playlist {
 export default function Dropdown() {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [open, setOpen] = useState(false);
-    const [selected, setSelected] = useState<Playlist | null>(null);
+    const [selected, setSelected] = useState<Playlist | null>(() => {
+        if (typeof window !== 'undefined') {
+            const saved = localStorage.getItem('selectedPlaylist');
+            return saved ? JSON.parse(saved) : null;
+        }
+    });
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -36,6 +40,10 @@ export default function Dropdown() {
         }
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [open]);
+
+    useEffect(() => {
+        localStorage.setItem('selectedPlaylist', selected ? JSON.stringify(selected) : '');
+    }, [selected]);
 
     return (
         <div className={styles.dropdown} ref={dropdownRef}>

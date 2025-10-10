@@ -117,7 +117,11 @@ export default function Navigation() {
                             </svg>
                         </button>
                     </motion.nav>
-                    <Dropdown />
+                    {pathname !== '/contact' ? (
+                        <Dropdown />
+                    ) : (
+                        <></>
+                    )}
                 </>
             ) : (
                 <></>
