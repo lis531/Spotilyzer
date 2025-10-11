@@ -4,7 +4,7 @@ import styles from "./artists.module.css";
 import React, { useState, useEffect } from "react";
 import { getUserItems } from "@/utils/spotify";
 import Image from "next/image";
-import TimeRangeButtons from "@/components/TimeRangeButtons/TimeRangeButtons";
+import TimeRangeButtons from "@/components/TimeRangeButtons";
 
 interface Artist {
     id: string;
@@ -59,7 +59,7 @@ export default function Artists() {
                             height={200}
                         />
                         <h3>{artist.name}</h3>
-                        <p>{artist.followers.total} followers</p>
+                        <p>{artist.followers.total.toLocaleString()} followers</p>
                         <span className={`rank ${styles.rank}`}>#{index + 1}</span>
                     </motion.div>
                 ))}

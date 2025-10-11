@@ -4,7 +4,7 @@ import styles from "./tracks.module.css";
 import { motion } from "framer-motion";
 import { getUserItems } from "@/utils/spotify";
 import Image from "next/image";
-import TimeRangeButtons from "@/components/TimeRangeButtons/TimeRangeButtons";
+import TimeRangeButtons from "@/components/TimeRangeButtons";
 
 interface Track {
     id: string;

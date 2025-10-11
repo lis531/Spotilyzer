@@ -3,7 +3,7 @@ import styles from "./genres.module.css";
 import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import { getUserTopGenres } from "@/utils/spotify";
-import TimeRangeButtons from "@/components/TimeRangeButtons/TimeRangeButtons";
+import TimeRangeButtons from "@/components/TimeRangeButtons";
 
 export default function Genres() {
     const [topGenres, setTopGenres] = useState<string[]>([]);
@@ -24,7 +24,10 @@ export default function Genres() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
         >
-            <h1 className="title">Most Popular Genres</h1>
+            <h1 className={`title ${styles.title}`}>Most Popular Genres*</h1>
+            <p className={styles.disclaimer}>
+                *Based on your top artists and tracks analyzed by Spotify
+            </p>
             <p className="description">
                 Discover your top music genres and explore new ones based on your listening habits.
             </p>

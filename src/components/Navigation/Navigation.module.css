@@ -46,16 +46,17 @@
 
 .highlight,
 .highlightDropdown {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
   border-radius: 8px;
 }
 .highlight {
   background: var(--gradient-green-medium);
   border: 1px solid var(--border-green);
-  z-index: 1;
   pointer-events: none;
-  will-change: transform;
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  height: 2.2rem;
+  z-index: 1;
 }
 .highlightDropdown {
   z-index: -1;
