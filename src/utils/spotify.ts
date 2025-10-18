@@ -2,7 +2,7 @@
 const SPOTIFY_AUTH_URL = 'https://accounts.spotify.com/authorize';
 const SPOTIFY_SCOPES = [
   'user-read-private',
-  'user-read-email', 
+  'user-read-email',
   'user-top-read',
   'user-read-recently-played',
   'user-library-read',
@@ -23,20 +23,20 @@ function getCachedData(cacheKey: string): unknown | null {
 
   const cached = localStorage.getItem(cacheKey);
   if (!cached) return null;
-  
+
   const { data, timestamp } = JSON.parse(cached);
-  
+
   if (Date.now() - timestamp > CACHE_DURATION) {
     localStorage.removeItem(cacheKey);
     return null;
   }
-  
+
   return data;
 }
 
 function setCachedData(cacheKey: string, data: unknown): void {
   if (typeof window === 'undefined') return;
-  
+
   const cacheData = {
     data,
     timestamp: Date.now()
@@ -46,7 +46,7 @@ function setCachedData(cacheKey: string, data: unknown): void {
 
 export function clearSpotifyCache(): void {
   if (typeof window === 'undefined') return;
-  
+
   const keysToRemove: string[] = [];
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
@@ -54,19 +54,19 @@ export function clearSpotifyCache(): void {
       keysToRemove.push(key);
     }
   }
-  
+
   keysToRemove.forEach(key => localStorage.removeItem(key));
 }
 
 // Token management
 export function isAuthenticated(): boolean {
   if (typeof window === 'undefined') return false;
-  
+
   const token = localStorage.getItem('spotify_access_token');
   const expiresAt = localStorage.getItem('spotify_token_expires_at');
-  
+
   if (!token || !expiresAt) return false;
-  
+
   return Date.now() < parseInt(expiresAt);
 }
 
@@ -103,7 +103,7 @@ export function getSpotifyAuthUrl(): string {
 
 export async function handleSpotifyCallback(): Promise<boolean> {
   if (typeof window === 'undefined') return false;
-  
+
   const urlParams = new URLSearchParams(window.location.search);
   const code = urlParams.get('code');
   const state = urlParams.get('state');
@@ -126,16 +126,16 @@ export async function handleSpotifyCallback(): Promise<boolean> {
     const response = await fetch('/api/spotify/user-token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        code, 
-        redirect_uri: window.location.origin + '/' 
+      body: JSON.stringify({
+        code,
+        redirect_uri: window.location.origin + '/'
       })
     });
 
     if (!response.ok) throw new Error('Token exchange failed');
-    
+
     const data = await response.json();
-    
+
     if (data.access_token && data.expires_in) {
       const expiresAt = Date.now() + (data.expires_in * 1000);
       localStorage.setItem('spotify_access_token', data.access_token);
@@ -154,7 +154,7 @@ export async function handleSpotifyCallback(): Promise<boolean> {
 
 export async function spotifyApiCall(endpoint: string, useCache: boolean = true) {
   const cacheKey = getCacheKey(endpoint);
-  
+
   if (useCache) {
     const cachedData = getCachedData(cacheKey);
     if (cachedData) {
@@ -169,7 +169,7 @@ export async function spotifyApiCall(endpoint: string, useCache: boolean = true)
   });
 
   const data = await response.json();
-  
+
   if (useCache) {
     setCachedData(cacheKey, data);
   }
@@ -266,9 +266,9 @@ export async function getUserTopGenres(timeRange: 'short_term' | 'medium_term' |
   }
 
   return Object.entries(genreMap)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, limit)
-      .map(([name]) => name);
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, limit)
+    .map(([name]) => name);
 }
 
 export async function getMbidsForSpotifyTracks(spotifyTrackIds: string[]): Promise<string[]> {
@@ -286,31 +286,85 @@ export async function getMbidsForSpotifyTracks(spotifyTrackIds: string[]): Promi
   return mbids.filter((mbid): mbid is string => mbid !== null);
 }
 
-export async function getAudioFeatures(trackMbids: string[], useCache: boolean = true): Promise<string[]> {
-  const promises = trackMbids.map(async (mbid) => {
-    const url = `https://acousticbrainz.org/api/v1/${mbid}/high-level`;
-    const response = await fetch(url);
+export async function getAudioFeatures(trackIds: string[], useCache: boolean = true, spotifyIdToIsrc?: Record<string, string>): Promise<any[]> {
+  function chunkArray<T>(arr: T[], size: number): T[][] {
+    const result: T[][] = [];
+    for (let i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size));
+    }
+    return result;
+  }
+
+  const idChunks = chunkArray(trackIds, 40);
+  let allTrackData: any[] = [];
+  for (const chunk of idChunks) {
+    const url = `https://api.reccobeats.com/v1/track?${chunk.map(id => `ids=${id}`).join('&')}`;
+    console.log('Fetching Reccobeats IDs for Spotify track IDs:', url);
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
     if (!response.ok) {
+      console.error('Failed to fetch Reccobeats IDs for chunk:', chunk);
+      allTrackData = allTrackData.concat(chunk.map(() => null));
+      continue;
+    }
+    const data = await response.json();
+    const trackArray = Array.isArray(data.content) ? data.content : [];
+    console.log('Reccobeats track data for chunk:', trackArray);
+    allTrackData = allTrackData.concat(trackArray);
+  }
+
+  spotifyIdToIsrc = spotifyIdToIsrc || {};
+
+  const reccobeatsIds = trackIds.map(spotifyId => {
+    const isrc = spotifyIdToIsrc[spotifyId];
+    if (!isrc) return null;
+    const trackObj = Array.isArray(allTrackData) ? allTrackData.find((t: any) => t.isrc === isrc) : null;
+    return trackObj?.id || null;
+  });
+  console.log('Mapped Reccobeats IDs:', reccobeatsIds);
+  const featuresPromises = reccobeatsIds.map(async (reccobeatsId) => {
+    if (!reccobeatsId) return null;
+    const featuresUrl = `https://api.reccobeats.com/v1/track/${reccobeatsId}/audio-features`;
+    console.log('Fetching audio features from Reccobeats:', featuresUrl);
+    const featuresResp = await fetch(featuresUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    if (!featuresResp.ok) {
       return null;
     }
-    return await response.json();
+    return await featuresResp.json();
   });
-  return Promise.all(promises);
+  return Promise.all(featuresPromises);
 }
 
 export async function getTracksWithFeatures(timeRange: 'short_term' | 'medium_term' | 'long_term' = 'medium_term', limit = 50, useCache: boolean = true, fromPlaylistId: string | null = null) {
   const topItems = await getUserItems('tracks', timeRange, limit, useCache, fromPlaylistId);
   const tracks = topItems.items || [];
+  const spotifyIdToIsrc: Record<string, string> = {};
+  tracks.forEach((track: any) => {
+    if (track.id && track.external_ids && track.external_ids.isrc) {
+      spotifyIdToIsrc[track.id] = track.external_ids.isrc;
+    }
+  });
+  const trackIds = tracks.map((track: any) => track.id).filter(Boolean);
+  let audioFeaturesList: any[] = [];
+  if (trackIds.length === 0) {
+    audioFeaturesList = tracks.map(() => null);
+  } else {
+    audioFeaturesList = await getAudioFeatures(trackIds, useCache, spotifyIdToIsrc);
+    console.log('Reccobeats API response:', audioFeaturesList);
+  }
 
-  const mbids = await getMbidsForSpotifyTracks(tracks.map((track: Track) => track.id));
-
-  const audioFeaturesList = await getAudioFeatures(mbids, useCache);
-  console.log(audioFeaturesList, mbids);
-
-  const tracksWithFeatures = tracks.map((track: Track, index: number) => ({
+  const tracksWithFeatures = tracks.map((track: any, index: number) => ({
     ...track,
     audioFeatures: audioFeaturesList[index] || null
   }));
-
   return { items: tracksWithFeatures };
 }

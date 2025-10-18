@@ -20,6 +20,12 @@ interface Track {
   danceability?: number;
   energy?: number;
   acousticness?: number;
+  audioFeatures?: {
+    danceability?: number;
+    energy?: number;
+    acousticness?: number;
+    [key: string]: any;
+  };
 }
 
 interface Artist {
@@ -71,17 +77,17 @@ export default function Home() {
     }, {} as Track),
     avgHappiness: topTracks.filter(track => track?.popularity && track.popularity > 50).length,
     danceablestTrack: topTracksWithFeatures.reduce((prev, curr) => {
-      return (curr?.danceability || 0) > (prev?.danceability || 0) ? curr : prev;
+      return ((curr?.audioFeatures?.danceability || 0) > (prev?.audioFeatures?.danceability || 0) ? curr : prev);
     }, {} as Track),
-    avgDanceability: topTracksWithFeatures.filter(track => track?.danceability && track.danceability > 50).length,
+    avgDanceability: topTracksWithFeatures.filter(track => track?.audioFeatures?.danceability && track.audioFeatures.danceability > 0.5).length,
     mostEnergeticTrack: topTracksWithFeatures.reduce((prev, curr) => {
-      return (curr?.energy || 0) > (prev?.energy || 0) ? curr : prev;
+      return ((curr?.audioFeatures?.energy || 0) > (prev?.audioFeatures?.energy || 0) ? curr : prev);
     }, {} as Track),
-    avgEnergy: topTracksWithFeatures.filter(track => track?.energy && track.energy > 50).length,
+    avgEnergy: topTracksWithFeatures.filter(track => track?.audioFeatures?.energy && track.audioFeatures.energy > 0.5).length,
     mostAcousticTrack: topTracksWithFeatures.reduce((prev, curr) => {
-      return (curr?.acousticness || 0) > (prev?.acousticness || 0) ? curr : prev;
+      return ((curr?.audioFeatures?.acousticness || 0) > (prev?.audioFeatures?.acousticness || 0) ? curr : prev);
     }, {} as Track),
-    avgAcousticness: topTracksWithFeatures.filter(track => track?.acousticness && track.acousticness > 50).length
+    avgAcousticness: topTracksWithFeatures.filter(track => track?.audioFeatures?.acousticness && track.audioFeatures.acousticness > 0.5).length
   };
 
   return (
