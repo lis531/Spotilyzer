@@ -52,7 +52,7 @@ export default function Navigation() {
             left: activeRect.left - navRect.left,
             width: activeRect.width
         });
-        
+
         if (isInitialRender) {
             setIsInitialRender(false);
         }

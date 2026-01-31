@@ -2,13 +2,13 @@ import styles from './Dropdown.module.css';
 import { getAllUserPlaylists } from '@/utils/spotify';
 import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { Playlist } from '@/types/spotify';
 
-interface Playlist {
-    id: string;
-    name: string;
+interface DropdownProps {
+    onPlaylistSelect?: (playlistId: string) => void;
 }
 
-export default function Dropdown() {
+export default function Dropdown({ onPlaylistSelect }: DropdownProps) {
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState<Playlist | null>(() => {
@@ -16,13 +16,25 @@ export default function Dropdown() {
             const saved = localStorage.getItem('selectedPlaylist');
             return saved ? JSON.parse(saved) : null;
         }
+        return null;
     });
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const fetchPlaylists = async () => {
-            const userPlaylists: Playlist[] = await getAllUserPlaylists();
-            setPlaylists(userPlaylists);
+            try {
+                const userPlaylists: Playlist[] = await getAllUserPlaylists();
+                
+                const likedSongsPlaylist: Playlist = {
+                    id: 'liked-songs',
+                    name: 'Liked Songs',
+                    tracks: { items: [], next: null }
+                };
+                
+                setPlaylists([likedSongsPlaylist, ...userPlaylists]);
+            } catch (error) {
+                console.error('Error fetching playlists:', error);
+            }
         };
         fetchPlaylists();
     }, []);
@@ -42,8 +54,15 @@ export default function Dropdown() {
     }, [open]);
 
     useEffect(() => {
-        localStorage.setItem('selectedPlaylist', selected ? JSON.stringify(selected) : '');
-    }, [selected]);
+        if (selected) {
+            localStorage.setItem('selectedPlaylist', JSON.stringify(selected));
+            onPlaylistSelect?.(selected.id);
+            // Dispatch custom event to notify other components
+            window.dispatchEvent(new Event('playlistChanged'));
+        } else {
+            localStorage.removeItem('selectedPlaylist');
+        }
+    }, [selected, onPlaylistSelect]);
 
     return (
         <div className={styles.dropdown} ref={dropdownRef}>
@@ -60,7 +79,6 @@ export default function Dropdown() {
                         exit={{ opacity: 0, y: -8 }}
                         transition={{ duration: 0.18 }}
                         tabIndex={-1}
-                        style={{ maxHeight: '12.5rem', overflowY: 'auto' }}
                     >
                         {playlists.map((playlist) => (
                             <motion.li

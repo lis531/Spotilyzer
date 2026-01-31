@@ -64,8 +64,8 @@ const DecadesPieChart: React.FC<DecadesPieChartProps> = ({ data }) => {
         labels: {
           color: '#ffffff',
           font: {
-              size: 12,
-              family: geistSans.style.fontFamily,
+            size: 12,
+            family: geistSans.style.fontFamily,
           },
           padding: 20,
         },
@@ -85,7 +85,7 @@ const DecadesPieChart: React.FC<DecadesPieChartProps> = ({ data }) => {
           family: geistSans.style.fontFamily,
         },
         callbacks: {
-          label: function(context: { label: string; parsed: number }) {
+          label: function (context: { label: string; parsed: number }) {
             const decade = context.label;
             const count = context.parsed;
             const total = data.reduce((sum, item) => sum + item.count, 0);

@@ -39,6 +39,7 @@
   color: var(--foreground);
   text-decoration: none;
   font-weight: 500;
+
   &:hover {
     color: var(--spotilyzer-green);
   }
@@ -48,6 +49,7 @@
 .highlightDropdown {
   border-radius: 8px;
 }
+
 .highlight {
   background: var(--gradient-green-medium);
   border: 1px solid var(--border-green);
@@ -58,6 +60,7 @@
   height: 2.2rem;
   z-index: 1;
 }
+
 .highlightDropdown {
   z-index: -1;
 }
@@ -71,9 +74,12 @@
 }
 
 .button:hover,
-.button.active { color: var(--spotilyzer-green); }
+.button.active {
+  color: var(--spotilyzer-green);
+}
 
-.navLink, .button {
+.navLink,
+.button {
   padding: 0.5rem 1rem;
   border-radius: 8px;
   transition: all 0.2s ease;
@@ -86,7 +92,9 @@
   white-space: nowrap;
 }
 
-.active { color: var(--spotilyzer-green); }
+.active {
+  color: var(--spotilyzer-green);
+}
 
 .dropdownContainer {
   position: relative;
@@ -102,7 +110,7 @@
   text-align: center;
   list-style: none;
   background: var(--background);
-  border-radius: 12px; 
+  border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
   padding: 0.5rem;
   z-index: 1001;
@@ -122,7 +130,7 @@
 }
 
 .dropdownItem.active {
-    background: var(--gradient-green-strong);
+  background: var(--gradient-green-strong);
   border: 1px solid var(--border-green-strong);
 }
 

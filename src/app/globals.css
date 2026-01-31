@@ -6,33 +6,33 @@
   --gray-medium: #666666;
   --gray-dark: #171717;
   --gray-darker: #0a0a0a;
-  
+
   /* Spotilyzer brand colors */
   --spotilyzer-green: #13dd5a;
   --spotilyzer-light-green: #47c571;
-  
+
   /* Semantic colors */
   --background: var(--white);
   --background-muted: var(--gray-light);
   --foreground: var(--gray-dark);
   --foreground-muted: var(--gray-medium);
-  
+
   /* Interactive colors */
   --border-light: rgba(255, 255, 255, 0.2);
   --border-green: rgba(29, 185, 84, 0.2);
   --border-green-strong: rgba(29, 185, 84, 0.3);
-  
+
   /* Background overlays */
   --overlay-base: rgba(255, 255, 255, 0.75);
   --overlay-green-light: rgba(29, 185, 84, 0.05);
   --overlay-green-medium: rgba(29, 185, 84, 0.1);
   --overlay-green-strong: rgba(29, 185, 84, 0.2);
-  
+
   /* Shadows */
   --shadow-default: 0 4px 20px rgba(0, 0, 0, 0.1);
   --shadow-green: 0 8px 30px rgba(29, 185, 84, 0.2);
   --shadow-green-strong: 0 6px 20px rgba(29, 185, 84, 0.4);
-  
+
   /* Gradients */
   --gradient-primary: linear-gradient(135deg, var(--spotilyzer-green), var(--spotilyzer-light-green));
   --gradient-green-light: linear-gradient(135deg, var(--overlay-green-light), rgba(30, 215, 96, 0.05));
@@ -56,13 +56,15 @@ body {
   overflow-x: hidden;
   height: 100%;
   scrollbar-gutter: stable;
+
   &::-webkit-scrollbar {
-	  width: 6px;
-	  background: transparent;
-	  border-radius: 8px;
+    width: 6px;
+    background: transparent;
+    border-radius: 8px;
   }
+
   &::-webkit-scrollbar-thumb {
-	  background: var(--gray-light);
+    background: var(--gray-light);
     border-radius: 8px;
   }
 }
@@ -163,6 +165,14 @@ h2 {
   text-align: center;
 }
 
+h3 {
+  font-size: 1.2rem;
+  line-height: 1.7rem;
+  font-weight: 600;
+  margin: 0.5rem 0;
+  color: var(--foreground);
+}
+
 /* Cards */
 .card {
   background: var(--background);
@@ -194,6 +204,20 @@ h2 {
 .image {
   border-radius: 8px;
   background: var(--gradient-primary);
+}
+
+.imageCircle {
+  border-radius: 50%;
+}
+
+/* Rank badge */
+.rank {
+  background: var(--gradient-primary);
+  color: var(--white);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.9rem;
 }
 
 .imageCircle {

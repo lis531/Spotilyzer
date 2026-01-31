@@ -1,45 +1,44 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  try {
-    const authHeader = request.headers.get('authorization');
-    
-    if (!authHeader?.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { error: 'Missing or invalid authorization header' },
-        { status: 401 }
-      );
-    }
+	try {
+		const authHeader = request.headers.get("authorization");
 
-    const token = authHeader.replace('Bearer ', '');
+		if (!authHeader?.startsWith("Bearer ")) {
+			return NextResponse.json(
+				{ error: "Missing or invalid authorization header" },
+				{ status: 401 },
+			);
+		}
 
-    const response = await fetch('https://api.spotify.com/v1/me', {
-      headers: { 'Authorization': `Bearer ${token}` },
-    });
+		const token = authHeader.replace("Bearer ", "");
 
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: 'Failed to fetch user data' },
-        { status: response.status }
-      );
-    }
+		const response = await fetch("https://api.spotify.com/v1/me", {
+			headers: { Authorization: `Bearer ${token}` },
+		});
 
-    const userData = await response.json();
+		if (!response.ok) {
+			return NextResponse.json(
+				{ error: "Failed to fetch user data" },
+				{ status: response.status },
+			);
+		}
 
-    return NextResponse.json({
-      id: userData.id,
-      display_name: userData.display_name,
-      email: userData.email,
-      images: userData.images,
-      followers: userData.followers,
-      country: userData.country,
-    });
+		const userData = await response.json();
 
-  } catch (error) {
-    console.error('User data fetch error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
+		return NextResponse.json({
+			id: userData.id,
+			display_name: userData.display_name,
+			email: userData.email,
+			images: userData.images,
+			followers: userData.followers,
+			country: userData.country,
+		});
+	} catch (error) {
+		console.error("User data fetch error:", error);
+		return NextResponse.json(
+			{ error: "Internal server error" },
+			{ status: 500 },
+		);
+	}
 }

@@ -6,34 +6,8 @@ import DecadesPieChart from "@/components/DecadesPieChart";
 import { useEffect, useState } from "react";
 import React from "react";
 import { getUserItems, getUserTopGenres, getTracksWithFeatures } from "@/utils/spotify";
-
-interface Track {
-  id: string;
-  name: string;
-  artists: { name: string }[];
-  album: {
-    release_date: string;
-    images: { url: string }[];
-  };
-  playcount?: number;
-  popularity?: number;
-  danceability?: number;
-  energy?: number;
-  acousticness?: number;
-  audioFeatures?: {
-    danceability?: number;
-    energy?: number;
-    acousticness?: number;
-    [key: string]: any;
-  };
-}
-
-interface Artist {
-  id: string;
-  name: string;
-  images: { url: string }[];
-  followers: { total: number };
-}
+import Moods from "@/components/Moods";
+import type { Track, Artist } from "@/types/spotify";
 
 export default function Home() {
   const { userInfo } = useAuth();
@@ -52,9 +26,6 @@ export default function Home() {
       setTopArtists(artistsResponse.items || []);
       const tracksWithFeaturesResponse = await getTracksWithFeatures('short_term');
       setTopTracksWithFeatures(tracksWithFeaturesResponse.items || []);
-      console.log(topTracksWithFeatures.reduce((prev, curr) => {
-      return (curr?.danceability || 0) > (prev?.danceability || 0) ? curr : prev;
-    }, {} as Track),);
     };
     fetchData();
   }, []);
@@ -65,30 +36,92 @@ export default function Home() {
       const decade = `${Math.floor(Number(releaseYear) / 10) * 10}s`;
       acc[decade] = {
         count: (acc[decade]?.count || 0) + 1,
-        topGenre: "Mixed" // Maybe add later
+        topGenre: "Mixed" // add later
       };
     }
     return acc;
   }, {} as Record<string, { count: number; topGenre: string }>);
 
-  const moodData = {
-    happiestTrack: topTracks.reduce((prev, curr) => {
-      return (curr?.popularity || 0) > (prev?.popularity || 0) ? curr : prev;
-    }, {} as Track),
-    avgHappiness: topTracks.filter(track => track?.popularity && track.popularity > 50).length,
-    danceablestTrack: topTracksWithFeatures.reduce((prev, curr) => {
-      return ((curr?.audioFeatures?.danceability || 0) > (prev?.audioFeatures?.danceability || 0) ? curr : prev);
-    }, {} as Track),
-    avgDanceability: topTracksWithFeatures.filter(track => track?.audioFeatures?.danceability && track.audioFeatures.danceability > 0.5).length,
-    mostEnergeticTrack: topTracksWithFeatures.reduce((prev, curr) => {
-      return ((curr?.audioFeatures?.energy || 0) > (prev?.audioFeatures?.energy || 0) ? curr : prev);
-    }, {} as Track),
-    avgEnergy: topTracksWithFeatures.filter(track => track?.audioFeatures?.energy && track.audioFeatures.energy > 0.5).length,
-    mostAcousticTrack: topTracksWithFeatures.reduce((prev, curr) => {
-      return ((curr?.audioFeatures?.acousticness || 0) > (prev?.audioFeatures?.acousticness || 0) ? curr : prev);
-    }, {} as Track),
-    avgAcousticness: topTracksWithFeatures.filter(track => track?.audioFeatures?.acousticness && track.audioFeatures.acousticness > 0.5).length
-  };
+  const moodData = React.useMemo(() => {
+    if (topTracksWithFeatures.length === 0) {
+      return {
+        avgHappiness: 0,
+        avgDanceability: 0,
+        avgEnergy: 0,
+        avgAcousticness: 0,
+        happiestTrack: null,
+        danceablestTrack: null,
+        mostEnergeticTrack: null,
+        mostAcousticTrack: null,
+      };
+    }
+
+    const tracksWithValidFeatures = topTracksWithFeatures.filter(
+      track => track.audioFeatures && typeof track.audioFeatures === 'object'
+    );
+
+    if (tracksWithValidFeatures.length === 0) {
+      return {
+        avgHappiness: 0,
+        avgDanceability: 0,
+        avgEnergy: 0,
+        avgAcousticness: 0,
+        happiestTrack: null,
+        danceablestTrack: null,
+        mostEnergeticTrack: null,
+        mostAcousticTrack: null,
+      };
+    }
+
+    // Calculate averages
+    const totals = tracksWithValidFeatures.reduce((acc, track) => {
+      const features = track.audioFeatures!;
+      return {
+        valence: acc.valence + (features.valence || 0),
+        danceability: acc.danceability + (features.danceability || 0),
+        energy: acc.energy + (features.energy || 0),
+        acousticness: acc.acousticness + (features.acousticness || 0),
+      };
+    }, { valence: 0, danceability: 0, energy: 0, acousticness: 0 });
+
+    const count = tracksWithValidFeatures.length;
+    
+    // Find tracks with max values
+    const happiestTrack = tracksWithValidFeatures.reduce((prev, curr) => {
+      const prevValence = prev.audioFeatures?.valence || 0;
+      const currValence = curr.audioFeatures?.valence || 0;
+      return currValence > prevValence ? curr : prev;
+    });
+
+    const danceablestTrack = tracksWithValidFeatures.reduce((prev, curr) => {
+      const prevDanceability = prev.audioFeatures?.danceability || 0;
+      const currDanceability = curr.audioFeatures?.danceability || 0;
+      return currDanceability > prevDanceability ? curr : prev;
+    });
+
+    const mostEnergeticTrack = tracksWithValidFeatures.reduce((prev, curr) => {
+      const prevEnergy = prev.audioFeatures?.energy || 0;
+      const currEnergy = curr.audioFeatures?.energy || 0;
+      return currEnergy > prevEnergy ? curr : prev;
+    });
+
+    const mostAcousticTrack = tracksWithValidFeatures.reduce((prev, curr) => {
+      const prevAcousticness = prev.audioFeatures?.acousticness || 0;
+      const currAcousticness = curr.audioFeatures?.acousticness || 0;
+      return currAcousticness > prevAcousticness ? curr : prev;
+    });
+
+    return {
+      avgHappiness: Math.round((totals.valence / count) * 100),
+      avgDanceability: Math.round((totals.danceability / count) * 100),
+      avgEnergy: Math.round((totals.energy / count) * 100),
+      avgAcousticness: Math.round((totals.acousticness / count) * 100),
+      happiestTrack,
+      danceablestTrack,
+      mostEnergeticTrack,
+      mostAcousticTrack,
+    };
+  }, [topTracksWithFeatures]);
 
   return (
     <motion.main
@@ -167,50 +200,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className={styles.moodsContainer}>
-          <h1 className={styles.h1}>
-            Your Moods
-          </h1>
-          <div className={styles.headerLine}></div>
-          <div className={styles.moodGrid}>
-            <div className={`card ${styles.moodCard}`}>
-              <h2 className={styles.h2}>Happiness</h2>
-              <progress value={moodData.avgHappiness} max={100} />
-              <p className={styles.description}>Mostly upbeat, positive songs.</p>
-              <div className={styles.songSection}>
-                <b>Happiest:</b>
-                <p>{moodData.happiestTrack?.name}</p>
-              </div>
-            </div>
-            <div className={`card ${styles.moodCard}`}>
-              <h2 className={styles.h2}>Danceability</h2>
-              <progress value={moodData.avgDanceability} max={100} />
-              <p className={styles.description}>Great for dancing and moving.</p>
-              <div className={styles.songSection}>
-                <b>Most danceable:</b>
-                <p>{moodData.danceablestTrack?.name}</p>
-              </div>
-            </div>
-            <div className={`card ${styles.moodCard}`}>
-              <h2 className={styles.h2}>Energy</h2>
-              <progress value={moodData.avgEnergy} max={100} />
-              <p className={styles.description}>High energy tracks to keep you moving.</p>
-              <div className={styles.songSection}>
-                <b>Most energetic:</b>
-                <p>{moodData.mostEnergeticTrack?.name}</p>
-              </div>
-            </div>
-            <div className={`card ${styles.moodCard}`}>
-              <h2 className={styles.h2}>Acousticness</h2>
-              <progress value={moodData.avgAcousticness} max={100} />
-              <p className={styles.description}>Soft and calming acoustic tracks.</p>
-              <div className={styles.songSection}>
-                <b>Most acoustic:</b>
-                <p>{moodData.mostAcousticTrack?.name}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Moods moodData={moodData} />
 
         <div className={styles.decadesContainer}>
           <h1 className={styles.h2}>By Decades</h1>

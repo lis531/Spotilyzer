@@ -4,11 +4,12 @@ import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import { getUserTopGenres } from "@/utils/spotify";
 import TimeRangeButtons from "@/components/TimeRangeButtons";
+import type { TimeRange } from "@/types/spotify";
 
 export default function Genres() {
     const [topGenres, setTopGenres] = useState<string[]>([]);
 
-    const fetchTopGenres = async (timeRange: 'short_term' | 'medium_term' | 'long_term') => {
+    const fetchTopGenres = async (timeRange: TimeRange) => {
         const genres = await getUserTopGenres(timeRange);
         setTopGenres(genres);
     };

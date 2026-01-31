@@ -79,7 +79,11 @@
   opacity: 0.6;
 }
 
-.loadingContainer p, .authDescription { color: var(--foreground); opacity: 0.8; }
+.loadingContainer p,
+.authDescription {
+  color: var(--foreground);
+  opacity: 0.8;
+}
 
 @media (prefers-color-scheme: dark) {
   .authTitle {
@@ -95,15 +99,15 @@
     padding: 1rem;
     min-height: 60vh;
   }
-  
+
   .authTitle {
     font-size: 2rem;
   }
-  
+
   .authDescription {
     font-size: 1rem;
   }
-  
+
   .spotifyButton {
     padding: 14px 28px;
     font-size: 1rem;

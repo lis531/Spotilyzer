@@ -20,9 +20,3 @@
   color: var(--foreground-muted);
   font-size: 0.9rem;
 }
-
-.rank {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-}

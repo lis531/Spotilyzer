@@ -4,7 +4,7 @@ import styles from "./Footer.module.css";
 
 export default function Footer() {
   return (
-    <motion.footer 
+    <motion.footer
       className={styles.footer}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

@@ -2,17 +2,18 @@
 import styles from "./TimeRangeButtons.module.css";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
+import type { TimeRange } from "@/types/spotify";
 
 interface TimeRangeButtonsProps {
-    onTimeRangeChange: (timeRange: 'short_term' | 'medium_term' | 'long_term') => void;
+    onTimeRangeChange: (timeRange: TimeRange) => void;
 }
 
 export default function TimeRangeButtons({ onTimeRangeChange }: TimeRangeButtonsProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const currentTimeRange = searchParams.get('timeRange') as 'short_term' | 'medium_term' | 'long_term' || 'medium_term';
+    const currentTimeRange = (searchParams.get('timeRange') as TimeRange) || 'medium_term';
 
-    const handleTimeRangeChange = useCallback((timeRange: 'short_term' | 'medium_term' | 'long_term') => {
+    const handleTimeRangeChange = useCallback((timeRange: TimeRange) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('timeRange', timeRange);
         router.push(`?${params.toString()}`);

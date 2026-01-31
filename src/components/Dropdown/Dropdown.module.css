@@ -1,5 +1,6 @@
 /* Dropdown container */
 .dropdown {
+	position: relative;
 	display: inline-block;
 	min-width: 300px;
 	font-family: inherit;
@@ -23,7 +24,8 @@
 	position: relative;
 }
 
-.select:hover, .select:focus {
+.select:hover,
+.select:focus {
 	border-color: var(--spotilyzer-green);
 	box-shadow: var(--shadow-green);
 }
@@ -45,7 +47,10 @@
 
 /* Dropdown menu */
 .menu {
-	margin-top: 0.5rem;
+	position: absolute;
+	top: calc(100% + 0.5rem);
+	left: 0;
+	right: 0;
 	background: var(--background);
 	border: 2px solid var(--border-green);
 	border-radius: 8px;
@@ -61,9 +66,10 @@
 	background: transparent;
 	border-radius: 8px;
 }
+
 .menu::-webkit-scrollbar-thumb {
 	background: var(--gray-light);
-    border-radius: 8px;
+	border-radius: 8px;
 }
 
 /* Dropdown option */
@@ -78,7 +84,8 @@
 	transition: background 0.15s, color 0.15s;
 }
 
-.option:hover, .option:focus {
+.option:hover,
+.option:focus {
 	background: var(--overlay-green-light);
 	color: var(--spotilyzer-green);
 }

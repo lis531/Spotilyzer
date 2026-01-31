@@ -5,18 +5,12 @@ import React, { useState, useEffect } from "react";
 import { getUserItems } from "@/utils/spotify";
 import Image from "next/image";
 import TimeRangeButtons from "@/components/TimeRangeButtons";
-
-interface Artist {
-    id: string;
-    name: string;
-    images: { url: string }[];
-    followers: { total: number };
-}
+import type { Artist, TimeRange } from "@/types/spotify";
 
 export default function Artists() {
     const [topArtists, setTopArtists] = useState<{ items: Artist[] }>({ items: [] });
 
-    const fetchTopArtists = async (timeRange: 'short_term' | 'medium_term' | 'long_term') => {
+    const fetchTopArtists = async (timeRange: TimeRange) => {
         const artists = await getUserItems('artists', timeRange);
         setTopArtists(artists);
     };

@@ -5,22 +5,13 @@ import { motion } from "framer-motion";
 import { getUserItems } from "@/utils/spotify";
 import Image from "next/image";
 import TimeRangeButtons from "@/components/TimeRangeButtons";
-
-interface Track {
-    id: string;
-    name: string;
-    artists: { name: string }[];
-    album: {
-        images: { url: string }[];
-    };
-    playcount?: number;
-}
+import type { Track, TimeRange } from "@/types/spotify";
 
 export default function Tracks() {
     const [topTracks, setTopTracks] = useState<{ items: Track[] }>({ items: [] });
     const playlistId = process.env.NEXT_PUBLIC_SPOTIFY_PLAYLIST_ID || null;
 
-    const fetchTopTracks = async (timeRange: 'short_term' | 'medium_term' | 'long_term') => {
+    const fetchTopTracks = async (timeRange: TimeRange) => {
         const tracks = await getUserItems("tracks", timeRange, 50, true, playlistId);
         setTopTracks(tracks);
     };
