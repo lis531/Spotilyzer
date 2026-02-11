@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import styles from "./artists.module.css";
-import React, { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getUserItems } from "@/utils/spotify";
 import Image from "next/image";
 import TimeRangeButtons from "@/components/TimeRangeButtons";
@@ -10,14 +10,14 @@ import type { Artist, TimeRange } from "@/types/spotify";
 export default function Artists() {
     const [topArtists, setTopArtists] = useState<{ items: Artist[] }>({ items: [] });
 
-    const fetchTopArtists = async (timeRange: TimeRange) => {
+    const fetchTopArtists = useCallback(async (timeRange: TimeRange) => {
         const artists = await getUserItems('artists', timeRange);
         setTopArtists(artists);
-    };
+    }, []);
 
     useEffect(() => {
-        fetchTopArtists("medium_term");
-    }, []);
+        void fetchTopArtists("medium_term");
+    }, [fetchTopArtists]);
 
     return (
         <motion.main

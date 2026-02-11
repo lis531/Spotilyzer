@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -31,7 +31,7 @@ export default function Navigation() {
         window.location.reload();
     };
 
-    const updateHighlight = () => {
+    const updateHighlight = useCallback(() => {
         if (!navRef.current) return;
 
         let activeTab = '';
@@ -56,7 +56,7 @@ export default function Navigation() {
         if (isInitialRender) {
             setIsInitialRender(false);
         }
-    };
+    }, [isInitialRender, pathname, shouldHighlightDropdown]);
 
     useEffect(() => {
         if (isLoggedIn && !loading) {
@@ -64,7 +64,7 @@ export default function Navigation() {
             const timer = setTimeout(updateHighlight, 200);
             return () => clearTimeout(timer);
         }
-    }, [pathname, showPopular, isLoggedIn, loading]);
+    }, [pathname, showPopular, isLoggedIn, loading, updateHighlight]);
 
     useEffect(() => {
         document.addEventListener('click', handleClickOutside);

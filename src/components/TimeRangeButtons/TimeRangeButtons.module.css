@@ -27,3 +27,17 @@
     border-color: var(--spotilyzer-green);
     color: var(--white);
 }
+
+@media (max-width: 768px) {
+    .timeRangeButtons {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .timeRangeButton {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+        flex: 1 1 auto;
+    }
+}

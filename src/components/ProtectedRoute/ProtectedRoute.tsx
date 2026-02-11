@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import styles from "./ProtectedRoute.module.css";
@@ -9,7 +9,27 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { isLoggedIn, loading, login } = useAuth();
+  const { isLoggedIn, loading, login, loginWithToken } = useAuth();
+  const [accessToken, setAccessToken] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleManualLogin = async () => {
+    if (!accessToken.trim()) {
+      setError("Please enter an access token");
+      return;
+    }
+
+    setIsLoading(true);
+    setError("");
+
+    const success = await loginWithToken(accessToken.trim());
+
+    if (!success) {
+      setError("Invalid access token. Please check and try again.");
+      setIsLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -44,6 +64,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
             <p className={styles.authDescription}>
               Connect your Spotify account to analyze your listening habits and discover new music insights.
             </p>
+
             <button
               className={styles.spotifyButton}
               onClick={login}
@@ -53,6 +74,44 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
               </svg>
               Connect with Spotify
             </button>
+
+            <div className={styles.divider}>
+              <span>OR</span>
+            </div>
+
+            <div className={styles.manualAuthSection}>
+              <p className={styles.manualAuthTitle}>Use Access Token</p>
+              <p className={styles.manualAuthDescription}>
+                Already have a Spotify access token? Paste it below to get started.
+              </p>
+              <input
+                type="text"
+                className={styles.tokenInput}
+                placeholder="Paste your Spotify access token here"
+                value={accessToken}
+                onChange={(e) => setAccessToken(e.target.value)}
+                disabled={isLoading}
+              />
+              {error && <p className={styles.errorMessage}>{error}</p>}
+              <button
+                className={styles.manualLoginButton}
+                onClick={handleManualLogin}
+                disabled={isLoading}
+              >
+                {isLoading ? "Validating..." : "Continue with Token"}
+              </button>
+              <p className={styles.tokenHint}>
+                Get your token from the{" "}
+                <a
+                  href="https://developer.spotify.com/console/get-current-user/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Spotify Web API Console
+                </a>
+              </p>
+            </div>
+
             <p className={styles.authDisclaimer}>
               We&apos;ll only access your listening data to provide personalized insights. Your data stays private.
             </p>

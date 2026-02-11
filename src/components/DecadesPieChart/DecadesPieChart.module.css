@@ -17,3 +17,14 @@
   border-radius: 8px;
   background: var(--gradient-green-light);
 }
+
+@media (max-width: 768px) {
+  .chartContainer {
+    max-width: 300px;
+    height: 300px;
+  }
+
+  .noData {
+    height: 220px;
+  }
+}

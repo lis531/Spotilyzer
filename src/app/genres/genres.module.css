@@ -35,3 +35,21 @@
   margin-top: 0.5rem;
   margin-bottom: 1.5rem;
 }
+
+@media (max-width: 768px) {
+  .genreGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .genreCard {
+    padding: 1.5rem;
+  }
+
+  .genreCard h3 {
+    font-size: 1.2rem;
+  }
+
+  .genreCard p {
+    font-size: 0.9rem;
+  }
+}
