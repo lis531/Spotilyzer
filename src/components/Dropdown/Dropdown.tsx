@@ -24,19 +24,19 @@ export default function Dropdown({ onPlaylistSelect }: DropdownProps) {
         const fetchPlaylists = async () => {
             try {
                 const userPlaylists: Playlist[] = await getAllUserPlaylists();
-                
+
                 const likedSongsPlaylist: Playlist = {
                     id: 'liked-songs',
                     name: 'Liked Songs',
                     tracks: { items: [], next: null }
                 };
-                
+
                 setPlaylists([likedSongsPlaylist, ...userPlaylists]);
             } catch (error) {
                 console.error('Error fetching playlists:', error);
             }
         };
-        fetchPlaylists();
+        void fetchPlaylists();
     }, []);
 
     useEffect(() => {

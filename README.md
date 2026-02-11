@@ -2,14 +2,14 @@
 
 A Next.js application that analyzes your Spotify listening habits and provides insights into your music preferences.
 
-## 🎵 Features
+## Features
 
 - Spotify OAuth authentication
 - User listening data analysis
 - Mood analysis based on audio features
 - Playlist creation capabilities
 
-## 🚀 How to Use Spotilyzer
+## How to Use Spotilyzer
 
 1. **Visit the App**: Go to [spotilyzer.vercel.app](https://spotilyzer.vercel.app)
 2. **Connect Your Spotify**: Click "Connect with Spotify" button
@@ -17,7 +17,7 @@ A Next.js application that analyzes your Spotify listening habits and provides i
 4. **Grant Permissions**: Allow Spotilyzer to access your listening data
 5. **Explore Your Music**: Discover insights about your listening habits, top artists, genres, and more!
 
-## 🔐 How Authentication Works
+## How Authentication Works
 
 ### What Happens When You Login:
 - You're redirected to Spotify's secure login page
@@ -27,13 +27,13 @@ A Next.js application that analyzes your Spotify listening habits and provides i
 - You can log out anytime to revoke access
 
 ### Your Privacy & Security:
-- ✅ Your Spotify password is never seen by Spotilyzer
-- ✅ Only music data is accessed (no personal info beyond what you share)
-- ✅ Data stays in your browser - not stored on my servers
-- ✅ You can revoke access anytime through Spotify settings
-- ✅ CSRF protection prevents unauthorized access
+- Your Spotify password is never seen by Spotilyzer
+- Only music data is accessed (no personal info beyond what you share)
+- Data stays in your browser - not stored on my servers
+- You can revoke access anytime through Spotify settings
+- CSRF protection prevents unauthorized access
 
-## 📱 What Data I Access
+## What Data I Access
 
 With your permission, Spotilyzer accesses:
 - **Basic Profile**: Your Spotify username and profile picture
@@ -41,7 +41,7 @@ With your permission, Spotilyzer accesses:
 - **Music Library**: Your liked songs and saved tracks
 - **Playlist Access**: Ability to create playlists based on your preferences (optional)
 
-## 📋 Spotify Permissions Explained
+## Spotify Permissions Explained
 
 When you connect, you'll be asked to grant these permissions:
 - `user-read-private`: Basic profile information
@@ -52,7 +52,7 @@ When you connect, you'll be asked to grant these permissions:
 - `playlist-modify-public`: Create public playlists (optional feature)
 - `playlist-modify-private`: Create private playlists (optional feature)
 
-## 🎨 What You'll Discover
+## What You'll Discover
 
 ### Music Analytics
 - **Music Journey**: How your taste has evolved
@@ -60,7 +60,7 @@ When you connect, you'll be asked to grant these permissions:
 - **Playlist Suggestions**: Playlists created from your genres and moods
 - **Share-worthy Stats**: Cool facts about your music
 
-## 🎵 Ready to Explore Your Music?
+## Ready to Explore Your Music?
 
 [**Start Analyzing Your Spotify Data →**](https://spotilyzer.vercel.app)
 

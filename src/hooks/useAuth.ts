@@ -7,6 +7,8 @@ import {
 	logout,
 	getAccessToken,
 	spotifyApiCall,
+	setManualAccessToken,
+	validateAccessToken,
 } from "@/utils/spotify";
 
 interface UserInfo {
@@ -28,18 +30,9 @@ export function useAuth() {
 	const [isLoggedIn, setIsLoggedIn] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [userInfo, setUserInfo] = useState<UserInfo | null>(() => {
-		// Load user info from localStorage on initialization
-		if (typeof window !== "undefined") {
-			const storedUserInfo = localStorage.getItem("spotify_user_info");
-			if (storedUserInfo) {
-				try {
-					return JSON.parse(storedUserInfo);
-				} catch (error) {
-					console.error("Failed to parse stored user info:", error);
-				}
-			}
-		}
-		return null;
+		if (typeof window === "undefined") return null;
+		const storedUserInfo = localStorage.getItem("spotify_user_info");
+		return storedUserInfo ? JSON.parse(storedUserInfo) : null;
 	});
 
 	const fetchUserData = async () => {
@@ -50,7 +43,6 @@ export function useAuth() {
 			const userData = await spotifyApiCall("/me", false);
 			if (userData && userData.id) {
 				setUserInfo(userData);
-				// Store user info in localStorage
 				localStorage.setItem("spotify_user_info", JSON.stringify(userData));
 			}
 		} catch (error) {
@@ -60,7 +52,6 @@ export function useAuth() {
 
 	useEffect(() => {
 		const initAuth = async () => {
-			// Handle Spotify callback if present
 			const callbackSuccess = await handleSpotifyCallback();
 			if (callbackSuccess) {
 				setIsLoggedIn(true);
@@ -69,38 +60,50 @@ export function useAuth() {
 				return;
 			}
 
-			// Check if already authenticated
 			const authenticated = isAuthenticated();
 			setIsLoggedIn(authenticated);
 
 			if (getAccessToken() && authenticated) {
 				await fetchUserData();
-			} else {
-				if (userInfo) {
-					setUserInfo(null);
-					localStorage.removeItem("spotify_user_info");
-				}
+			} else if (userInfo) {
+				setUserInfo(null);
+				localStorage.removeItem("spotify_user_info");
 			}
 
 			setLoading(false);
 		};
 
-		initAuth();
+		void initAuth();
 	}, [userInfo]);
 
 	const login = () => {
 		window.location.href = getSpotifyAuthUrl();
 	};
 
+	const loginWithToken = async (token: string): Promise<boolean> => {
+		const isValid = await validateAccessToken(token);
+		if (isValid) {
+			setManualAccessToken(token);
+			setIsLoggedIn(true);
+			await fetchUserData();
+			return true;
+		}
+		return false;
+	};
+
 	const handleLogout = () => {
 		logout();
 		setIsLoggedIn(false);
 		setUserInfo(null);
-		// Clear user info from localStorage on logout
-		if (typeof window !== "undefined") {
-			localStorage.removeItem("spotify_user_info");
-		}
+		localStorage.removeItem("spotify_user_info");
 	};
 
-	return { isLoggedIn, loading, userInfo, login, logout: handleLogout };
+	return {
+		isLoggedIn,
+		loading,
+		userInfo,
+		login,
+		loginWithToken,
+		logout: handleLogout,
+	};
 }

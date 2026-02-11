@@ -1,5 +1,3 @@
-// Shared TypeScript interfaces for Spotify data structures
-
 export interface Track {
 	id: string;
 	name: string;
@@ -47,3 +45,14 @@ export interface Playlist {
 }
 
 export type TimeRange = "short_term" | "medium_term" | "long_term";
+
+export type MoodData = {
+	avgHappiness: number;
+	avgDanceability: number;
+	avgEnergy: number;
+	avgAcousticness: number;
+	happiestTrack: Track | null;
+	danceablestTrack: Track | null;
+	mostEnergeticTrack: Track | null;
+	mostAcousticTrack: Track | null;
+};

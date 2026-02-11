@@ -1,11 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
 	try {
 		const { code, redirect_uri } = await request.json();
 
 		if (!code || !redirect_uri) {
-			return NextResponse.json(
+			return Response.json(
 				{ error: "Missing code or redirect_uri" },
 				{ status: 400 },
 			);
@@ -15,7 +13,7 @@ export async function POST(request: NextRequest) {
 		const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
 		if (!clientId || !clientSecret) {
-			return NextResponse.json(
+			return Response.json(
 				{ error: "Missing Spotify credentials" },
 				{ status: 500 },
 			);
@@ -43,7 +41,7 @@ export async function POST(request: NextRequest) {
 				console.warn(
 					"Suppressing duplicate token exchange error: invalid_grant",
 				);
-				return NextResponse.json(
+				return Response.json(
 					{ access_token: null, expires_in: null },
 					{ status: 200 },
 				);
@@ -53,7 +51,7 @@ export async function POST(request: NextRequest) {
 				tokenResponse.status,
 				errorText,
 			);
-			return NextResponse.json(
+			return Response.json(
 				{ error: "Token exchange failed", details: errorText },
 				{ status: 400 },
 			);
@@ -61,15 +59,12 @@ export async function POST(request: NextRequest) {
 
 		const tokenData = await tokenResponse.json();
 
-		return NextResponse.json({
+		return Response.json({
 			access_token: tokenData.access_token,
 			expires_in: tokenData.expires_in,
 		});
 	} catch (error) {
 		console.error("Token exchange error:", error);
-		return NextResponse.json(
-			{ error: "Internal server error" },
-			{ status: 500 },
-		);
+		return Response.json({ error: "Internal server error" }, { status: 500 });
 	}
 }

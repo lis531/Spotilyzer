@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "./tracks.module.css";
 import { motion } from "framer-motion";
 import { getUserItems } from "@/utils/spotify";
@@ -9,16 +9,16 @@ import type { Track, TimeRange } from "@/types/spotify";
 
 export default function Tracks() {
     const [topTracks, setTopTracks] = useState<{ items: Track[] }>({ items: [] });
-    const playlistId = process.env.NEXT_PUBLIC_SPOTIFY_PLAYLIST_ID || null;
+    const playlistId = process.env.SPOTIFY_PLAYLIST_ID || null;
 
-    const fetchTopTracks = async (timeRange: TimeRange) => {
+    const fetchTopTracks = useCallback(async (timeRange: TimeRange) => {
         const tracks = await getUserItems("tracks", timeRange, 50, true, playlistId);
         setTopTracks(tracks);
-    };
+    }, [playlistId]);
 
     useEffect(() => {
-        fetchTopTracks('medium_term');
-    }, []);
+        void fetchTopTracks('medium_term');
+    }, [fetchTopTracks]);
 
     return (
         <motion.main

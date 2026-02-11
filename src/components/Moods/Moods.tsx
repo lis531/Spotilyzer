@@ -1,8 +1,8 @@
 "use client";
-import { motion } from "framer-motion";
 import styles from "./Moods.module.css";
+import type { MoodData } from "@/types/spotify";
 
-export default function Moods({ moodData }: { moodData: any }) {
+export default function Moods({ moodData }: { moodData: MoodData }) {
     return (
         <div className={styles.moodsContainer}>
             <h1 className={styles.h1}>

@@ -1,7 +1,7 @@
 "use client";
 import styles from "./genres.module.css";
 import { motion } from "framer-motion";
-import React, { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getUserTopGenres } from "@/utils/spotify";
 import TimeRangeButtons from "@/components/TimeRangeButtons";
 import type { TimeRange } from "@/types/spotify";
@@ -9,14 +9,14 @@ import type { TimeRange } from "@/types/spotify";
 export default function Genres() {
     const [topGenres, setTopGenres] = useState<string[]>([]);
 
-    const fetchTopGenres = async (timeRange: TimeRange) => {
+    const fetchTopGenres = useCallback(async (timeRange: TimeRange) => {
         const genres = await getUserTopGenres(timeRange);
         setTopGenres(genres);
-    };
+    }, []);
 
     useEffect(() => {
-        fetchTopGenres("medium_term");
-    }, []);
+        void fetchTopGenres("medium_term");
+    }, [fetchTopGenres]);
 
     return (
         <motion.main className="main"

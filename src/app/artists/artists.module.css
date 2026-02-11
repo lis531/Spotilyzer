@@ -20,3 +20,18 @@
   color: var(--foreground-muted);
   font-size: 0.9rem;
 }
+
+@media (max-width: 768px) {
+  .artistImage {
+    width: 80px;
+    height: 80px;
+  }
+
+  .artistCard h3 {
+    font-size: 1.1rem;
+  }
+
+  .artistCard p {
+    font-size: 0.85rem;
+  }
+}
